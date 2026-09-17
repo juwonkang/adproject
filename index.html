@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강주원 선수 · 스폰서 슬롯</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#EDE9E0;
+    --surface:#FFFFFF;
+    --surface-2:#F6F3EC;
+    --border:#DDD6C7;
+    --text:#201F1B;
+    --text-soft:#6B6659;
+    --gold:#B4842A;
+    --gold-soft:rgba(180,132,42,0.14);
+    --gold-strong:rgba(180,132,42,0.9);
+    --teal:#1F6F64;
+    --danger:#B3432F;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#0E1A1C; --surface:#16262A; --surface-2:#1C2E32; --border:#2C4247;
+      --text:#F2F0EB; --text-soft:#9FB0AE; --gold:#C9A43B;
+      --gold-soft:rgba(201,164,59,0.18); --gold-strong:rgba(201,164,59,0.95);
+      --teal:#2E8C7E; --danger:#D9614A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#0E1A1C; --surface:#16262A; --surface-2:#1C2E32; --border:#2C4247;
+    --text:#F2F0EB; --text-soft:#9FB0AE; --gold:#C9A43B;
+    --gold-soft:rgba(201,164,59,0.18); --gold-strong:rgba(201,164,59,0.95);
+    --teal:#2E8C7E; --danger:#D9614A;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink); color:var(--text);
+    font-family:'Manrope',sans-serif; min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:28px 20px 60px;}
+
+  header{
+    display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:18px;
+    margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--border);
+  }
+  .title-block{flex:1;min-width:240px;}
+  .field{
+    background:transparent;border:none;border-bottom:1px dashed transparent;color:var(--text);
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:30px;padding:2px 0;width:100%;max-width:420px;
+  }
+  .field:hover, .field:focus{border-bottom-color:var(--border); outline:none;}
+  .field-sub{
+    background:transparent;border:none;border-bottom:1px dashed transparent;color:var(--text-soft);
+    font-family:'Manrope',sans-serif;font-size:15px;padding:6px 0 0;width:100%;max-width:460px;
+  }
+  .field-sub:hover, .field-sub:focus{border-bottom-color:var(--border); outline:none;}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--gold);
+    border:1px solid var(--gold);border-radius:999px;padding:6px 14px;white-space:nowrap;font-weight:600;
+  }
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+  .badges{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+  .badge-deadline{color:var(--danger);border-color:var(--danger);}
+  .badge-deadline .dot{background:var(--danger);}
+  .badge-closed{color:var(--text-soft);border-color:var(--border);}
+  .badge-closed .dot{background:var(--text-soft);}
+
+  .layout{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:36px;align-items:start;}
+  @media (max-width:840px){ .layout{grid-template-columns:1fr;} }
+
+  .stage-col{display:flex;flex-direction:column;align-items:center;}
+  .stage-card{
+    position:relative;width:100%;max-width:280px;padding:0;border-radius:22px;overflow:hidden;
+    perspective:1600px;
+    background:#FFFFFF;
+    box-shadow:0 24px 48px -20px rgba(0,0,0,0.18);
+  }
+  .flip{
+    position:relative;z-index:1;width:100%;aspect-ratio:440 / 1371;
+    transform-style:preserve-3d;-webkit-transform-style:preserve-3d;
+    transition:transform .9s cubic-bezier(.5,.15,.15,1);
+  }
+  .flip.flipped{transform:rotateY(180deg);}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+  .face.back{transform:rotateY(180deg);}
+  .photo-stage{position:relative;width:100%;height:100%;}
+  .photo-base{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;
+    filter:drop-shadow(0 18px 14px rgba(0,0,0,0.5));}
+  .zone-overlay{position:absolute;inset:0;width:100%;height:100%;display:block;}
+
+  .zone{cursor:pointer;}
+  .zone .zone-rect{
+    fill:var(--gold-soft); stroke:var(--gold); stroke-width:2.6;
+    transition:stroke-width .15s, fill-opacity .15s;
+  }
+  .zone:hover .zone-rect{stroke-width:3.6;}
+  .zone .zone-badge circle{fill:var(--gold);}
+  .zone .zone-badge line{stroke:#241A10;stroke-width:3.2;stroke-linecap:round;}
+  .zone .zone-hit{fill:transparent;}
+  .zone.filled .zone-rect{display:none;}
+  .zone.filled .zone-badge{display:none;}
+  .zone.draft .zone-rect{fill:none;stroke:var(--gold);stroke-dasharray:5 4;}
+  .zone.draft .zone-badge{display:none;}
+  .zone-remove{display:none;cursor:pointer;}
+  .zone.filled .zone-remove{display:block;}
+  .zone.draft .zone-remove{display:block;}
+  .zone-remove circle{fill:rgba(15,15,15,0.72);}
+  .zone-remove line{stroke:#fff;stroke-width:2.8;stroke-linecap:round;}
+
+  .view-toggle{
+    position:relative;display:inline-flex;margin-top:18px;background:var(--surface-2);
+    border:1px solid var(--border);border-radius:999px;padding:4px;gap:2px;
+  }
+  .view-toggle button{
+    position:relative;z-index:1;border:none;background:transparent;font-family:'Manrope',sans-serif;
+    font-weight:700;font-size:14px;padding:9px 22px;border-radius:999px;color:var(--text-soft);
+    cursor:pointer;transition:color .2s;
+  }
+  .view-toggle button.active{color:var(--ink);}
+  .view-toggle .pill{
+    position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);background:var(--gold);
+    border-radius:999px;transition:transform .3s cubic-bezier(.5,.15,.15,1);
+  }
+  .view-toggle.is-back .pill{transform:translateX(100%);}
+
+  .hint{margin-top:14px;font-size:13px;color:var(--text-soft);text-align:center;max-width:280px;}
+
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;}
+  .progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:14px;font-weight:700;}
+  .progress-track{height:6px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:22px;}
+  .progress-fill{height:100%;background:var(--gold);border-radius:999px;transition:width .4s ease;width:0%;}
+
+  .slot-group{margin-bottom:20px;}
+  .slot-group h3{
+    font-family:'Oswald',sans-serif;font-weight:500;font-size:14px;letter-spacing:.02em;color:var(--text-soft);
+    margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);
+  }
+  .slot-row{display:flex;align-items:center;gap:12px;padding:9px 0;}
+  .slot-thumb{
+    width:40px;height:40px;border-radius:9px;border:1.5px dashed var(--border);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    background-size:cover;background-position:center;color:var(--gold);font-size:18px;font-weight:700;overflow:hidden;
+  }
+  .slot-thumb.filled{border-style:solid;border-color:var(--gold);}
+  .slot-thumb.filled .slot-thumb-plus{display:none;}
+  .slot-row.draft .slot-thumb{border-style:dashed;border-color:var(--gold);}
+  .slot-info{flex:1;min-width:0;}
+  .slot-label{font-size:14.5px;font-weight:700;}
+  .slot-price{
+    margin-top:4px;display:flex;align-items:center;gap:6px;
+    color:var(--text-soft);font-size:12.5px;font-family:'Manrope',sans-serif;
+  }
+  .slot-price .dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;}
+  .slot-row.draft .slot-price .dot{background:var(--gold);}
+  .slot-row.filled .slot-price{color:var(--gold);}
+  .slot-row.filled .slot-price .dot{background:var(--gold);}
+  .slot-actions{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+  .btn-ghost{
+    border:1px solid var(--gold);color:var(--gold);background:transparent;font-family:'Manrope',sans-serif;
+    font-weight:700;font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;
+  }
+  .btn-ghost:hover{background:var(--gold-soft);}
+  .btn-solid{
+    border:1px solid var(--gold);background:var(--gold);color:var(--surface);font-family:'Manrope',sans-serif;
+    font-weight:800;font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;
+  }
+  .btn-solid:hover{opacity:.9;}
+  .btn-text{border:none;background:transparent;color:var(--text-soft);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;}
+  .btn-link{
+    border:none;background:transparent;color:var(--text-soft);font-size:12.5px;cursor:pointer;
+    text-decoration:underline;padding:0;margin-top:12px;font-family:'Manrope',sans-serif;
+  }
+  .btn-link:hover{color:var(--gold);}
+  .btn-link:disabled{opacity:.6;cursor:default;}
+  .btn-text:hover{color:var(--danger);}
+
+  .stage-actions{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:16px;}
+  .stage-actions .btn-ghost{padding:8px 16px;}
+  .stage-actions .btn-link{margin-top:0;}
+  .zone-overlay.drawing{cursor:crosshair;}
+  .draw-preview{fill:rgba(180,132,42,0.22);stroke:var(--gold);stroke-width:2;stroke-dasharray:5 4;pointer-events:none;}
+
+  .contact-card{
+    margin-top:6px;padding-top:18px;border-top:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  .contact-field{background:transparent;border:none;color:var(--text);font-size:13.5px;font-weight:700;padding:0;}
+  .contact-field:hover,.contact-field:focus{outline:none;text-decoration:underline dashed var(--border);}
+  .reset-btn{border:none;background:transparent;color:var(--text-soft);font-size:12.5px;cursor:pointer;text-decoration:underline;}
+  .reset-btn:hover{color:var(--danger);}
+
+  .sponsor-history{margin-top:44px;}
+  .sponsor-history h2{
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:20px;margin:0 0 4px;color:var(--text);
+  }
+  .sponsor-history .sub{font-size:13px;color:var(--text-soft);margin:0 0 16px;}
+  .sponsor-scroll{
+    display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;
+    scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
+  }
+  .sponsor-card{flex:0 0 150px;scroll-snap-align:start;}
+  .sponsor-card img{
+    width:150px;height:190px;object-fit:cover;border-radius:12px;border:1px solid var(--border);
+    display:block;background:var(--surface-2);
+  }
+  .sponsor-card .brand{font-size:13px;font-weight:800;margin-top:8px;color:var(--text);}
+  .sponsor-card .desc{font-size:11.5px;color:var(--text-soft);margin-top:2px;line-height:1.4;}
+
+  input[type=file]{display:none;}
+
+  .toast-host{
+    position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:200;
+    display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;
+  }
+  .toast{
+    background:var(--ink);color:var(--text);border:1px solid var(--border);padding:11px 20px;border-radius:999px;
+    font-size:13.5px;font-weight:700;box-shadow:0 14px 34px rgba(0,0,0,0.28);opacity:0;transform:translateY(-12px);
+    transition:opacity .25s ease, transform .25s ease;max-width:88vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast-success{border-color:var(--gold);color:var(--gold);}
+  .toast-error{border-color:var(--danger);color:var(--danger);}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(10,9,7,0.55);display:flex;align-items:center;justify-content:center;
+    z-index:150;padding:20px;
+  }
+  .modal-overlay[hidden]{display:none;}
+  .modal-card{
+    background:var(--surface);border-radius:18px;padding:26px;max-width:340px;width:100%;
+    box-shadow:0 30px 70px rgba(0,0,0,0.35);
+  }
+  .modal-title{font-family:'Oswald',sans-serif;font-size:19px;font-weight:600;margin:0 0 8px;color:var(--text);}
+  .modal-desc{font-size:13.5px;color:var(--text-soft);margin:0 0 16px;white-space:pre-line;line-height:1.5;}
+  .modal-fields{margin-bottom:6px;}
+  .modal-field{margin-bottom:14px;}
+  .modal-field label{display:block;font-size:12px;font-weight:700;color:var(--text-soft);margin-bottom:6px;}
+  .modal-field input{
+    width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;box-sizing:border-box;
+    font-size:15.5px;font-family:'Manrope',sans-serif;font-weight:700;color:var(--text);background:var(--surface-2);
+  }
+  .modal-field input:focus{outline:none;border-color:var(--gold);}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;}
+  .modal-actions .btn-ghost, .modal-actions .btn-solid{padding:9px 18px;font-size:13.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="title-block">
+      <input class="field" id="athleteName" value="강주원" maxlength="20">
+      <input class="field-sub" id="eventLabel" value="9월 배드민턴 대회 출전 · 유니폼에 로고를 실어드립니다" maxlength="60">
+    </div>
+    <div class="badges">
+      <div class="badge" id="eventBadge"><span class="dot"></span></div>
+      <div class="badge badge-deadline" id="deadlineBadge"><span class="dot"></span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <div class="stage-col">
+      <div class="stage-card">
+        <div class="flip" id="flip">
+          <div class="face front">
+            <div class="photo-stage">
+              <img class="photo-base" alt="정면" src="front.png">
+              <svg class="zone-overlay" viewBox="0 0 440 1371" preserveAspectRatio="xMidYMid meet">
+                <clipPath id="clip-chestLeft"><rect x="125" y="255" width="85" height="65" rx="14"/></clipPath>
+                <clipPath id="clip-chestRight"><rect x="230" y="255" width="85" height="65" rx="14"/></clipPath>
+                <clipPath id="clip-stomach"><rect x="140" y="370" width="160" height="90" rx="16"/></clipPath>
+                <clipPath id="clip-shortsLogo"><rect x="255" y="735" width="60" height="50" rx="10"/></clipPath>
+
+                <g class="zone" data-zone="chestLeft">
+                  <image data-zone-image="chestLeft" clip-path="url(#clip-chestLeft)" x="125" y="255" width="85" height="65" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="125" y="255" width="85" height="65" rx="14"/>
+                  <g class="zone-badge"><circle cx="167.5" cy="287.5" r="16"/><line x1="159.5" y1="287.5" x2="175.5" y2="287.5"/><line x1="167.5" y1="279.5" x2="167.5" y2="295.5"/></g>
+                  <rect class="zone-hit" x="125" y="255" width="85" height="65" rx="14"/>
+                  <g class="zone-remove" data-zone-remove="chestLeft"><circle cx="199" cy="266" r="13"/><line x1="194" y1="261" x2="204" y2="271"/><line x1="204" y1="261" x2="194" y2="271"/></g>
+                </g>
+
+                <g class="zone" data-zone="chestRight">
+                  <image data-zone-image="chestRight" clip-path="url(#clip-chestRight)" x="230" y="255" width="85" height="65" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="230" y="255" width="85" height="65" rx="14"/>
+                  <g class="zone-badge"><circle cx="272.5" cy="287.5" r="16"/><line x1="264.5" y1="287.5" x2="280.5" y2="287.5"/><line x1="272.5" y1="279.5" x2="272.5" y2="295.5"/></g>
+                  <rect class="zone-hit" x="230" y="255" width="85" height="65" rx="14"/>
+                  <g class="zone-remove" data-zone-remove="chestRight"><circle cx="304" cy="266" r="13"/><line x1="299" y1="261" x2="309" y2="271"/><line x1="309" y1="261" x2="299" y2="271"/></g>
+                </g>
+
+                <g class="zone" data-zone="stomach">
+                  <image data-zone-image="stomach" clip-path="url(#clip-stomach)" x="140" y="370" width="160" height="90" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="140" y="370" width="160" height="90" rx="16"/>
+                  <g class="zone-badge"><circle cx="220" cy="415" r="18"/><line x1="210" y1="415" x2="230" y2="415"/><line x1="220" y1="405" x2="220" y2="425"/></g>
+                  <rect class="zone-hit" x="140" y="370" width="160" height="90" rx="16"/>
+                  <g class="zone-remove" data-zone-remove="stomach"><circle cx="287" cy="383" r="13"/><line x1="282" y1="378" x2="292" y2="388"/><line x1="292" y1="378" x2="282" y2="388"/></g>
+                </g>
+
+                <g class="zone" data-zone="shortsLogo">
+                  <image data-zone-image="shortsLogo" clip-path="url(#clip-shortsLogo)" x="255" y="735" width="60" height="50" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="255" y="735" width="60" height="50" rx="10"/>
+                  <g class="zone-badge"><circle cx="285" cy="760" r="13"/><line x1="278" y1="760" x2="292" y2="760"/><line x1="285" y1="753" x2="285" y2="767"/></g>
+                  <rect class="zone-hit" x="255" y="735" width="60" height="50" rx="10"/>
+                  <g class="zone-remove" data-zone-remove="shortsLogo"><circle cx="307" cy="745" r="11"/><line x1="303" y1="741" x2="311" y2="749"/><line x1="311" y1="741" x2="303" y2="749"/></g>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="face back">
+            <div class="photo-stage">
+              <img class="photo-base" alt="뒷모습" src="back.png">
+              <svg class="zone-overlay" viewBox="0 0 436 1368" preserveAspectRatio="xMidYMid meet">
+                <clipPath id="clip-backUpper"><rect x="110" y="250" width="210" height="80" rx="16"/></clipPath>
+                <clipPath id="clip-backLower"><rect x="110" y="350" width="210" height="90" rx="16"/></clipPath>
+                <clipPath id="clip-calfLeft-back"><rect x="90" y="1000" width="85" height="110" rx="16"/></clipPath>
+                <clipPath id="clip-calfRight-back"><rect x="255" y="1000" width="85" height="110" rx="16"/></clipPath>
+
+                <g class="zone" data-zone="backUpper">
+                  <image data-zone-image="backUpper" clip-path="url(#clip-backUpper)" x="110" y="250" width="210" height="80" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="110" y="250" width="210" height="80" rx="16"/>
+                  <g class="zone-badge"><circle cx="215" cy="290" r="18"/><line x1="205" y1="290" x2="225" y2="290"/><line x1="215" y1="280" x2="215" y2="300"/></g>
+                  <rect class="zone-hit" x="110" y="250" width="210" height="80" rx="16"/>
+                  <g class="zone-remove" data-zone-remove="backUpper"><circle cx="307" cy="263" r="13"/><line x1="302" y1="258" x2="312" y2="268"/><line x1="312" y1="258" x2="302" y2="268"/></g>
+                </g>
+
+                <g class="zone" data-zone="backLower">
+                  <image data-zone-image="backLower" clip-path="url(#clip-backLower)" x="110" y="350" width="210" height="90" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="110" y="350" width="210" height="90" rx="16"/>
+                  <g class="zone-badge"><circle cx="215" cy="395" r="18"/><line x1="205" y1="395" x2="225" y2="395"/><line x1="215" y1="385" x2="215" y2="405"/></g>
+                  <rect class="zone-hit" x="110" y="350" width="210" height="90" rx="16"/>
+                  <g class="zone-remove" data-zone-remove="backLower"><circle cx="307" cy="363" r="13"/><line x1="302" y1="358" x2="312" y2="368"/><line x1="312" y1="358" x2="302" y2="368"/></g>
+                </g>
+
+                <g class="zone" data-zone="calfLeft">
+                  <image data-zone-image="calfLeft" clip-path="url(#clip-calfLeft-back)" x="90" y="1000" width="85" height="110" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="90" y="1000" width="85" height="110" rx="16"/>
+                  <g class="zone-badge"><circle cx="132.5" cy="1055" r="16"/><line x1="124.5" y1="1055" x2="140.5" y2="1055"/><line x1="132.5" y1="1047" x2="132.5" y2="1063"/></g>
+                  <rect class="zone-hit" x="90" y="1000" width="85" height="110" rx="16"/>
+                  <g class="zone-remove" data-zone-remove="calfLeft"><circle cx="164" cy="1012" r="13"/><line x1="159" y1="1007" x2="169" y2="1017"/><line x1="169" y1="1007" x2="159" y2="1017"/></g>
+                </g>
+
+                <g class="zone" data-zone="calfRight">
+                  <image data-zone-image="calfRight" clip-path="url(#clip-calfRight-back)" x="255" y="1000" width="85" height="110" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="255" y="1000" width="85" height="110" rx="16"/>
+                  <g class="zone-badge"><circle cx="297.5" cy="1055" r="16"/><line x1="289.5" y1="1055" x2="305.5" y2="1055"/><line x1="297.5" y1="1047" x2="297.5" y2="1063"/></g>
+                  <rect class="zone-hit" x="255" y="1000" width="85" height="110" rx="16"/>
+                  <g class="zone-remove" data-zone-remove="calfRight"><circle cx="329" cy="1012" r="13"/><line x1="324" y1="1007" x2="334" y2="1017"/><line x1="334" y1="1007" x2="324" y2="1017"/></g>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-toggle" id="viewToggle">
+        <div class="pill"></div>
+        <button class="active" data-view="front" type="button">앞모습</button>
+        <button data-view="back" type="button">뒷모습</button>
+      </div>
+
+      <div class="stage-actions">
+        <button class="btn-ghost" id="addZoneBtn" type="button">+ 새 위치 추가</button>
+        <button class="btn-link" id="refreshBtn" type="button">다른 병원의 최신 입찰 새로고침</button>
+      </div>
+
+      <p class="hint" id="mainHint">구역을 클릭해 로고를 올려보고, 마음에 들면 오른쪽에서 확정하세요. 확정 후엔 이메일로 담당자에게 바로 알릴 수 있어요.</p>
+    </div>
+
+    <div class="panel">
+      <div class="progress-row"><span>슬롯 현황</span><span id="progressText">0 / 8 채워짐</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+      <div class="slot-group">
+        <h3>상의 · 앞면</h3>
+        <div class="slot-row" data-row="chestLeft"></div>
+        <div class="slot-row" data-row="chestRight"></div>
+        <div class="slot-row" data-row="stomach"></div>
+      </div>
+
+      <div class="slot-group">
+        <h3>상의 · 뒷면</h3>
+        <div class="slot-row" data-row="backUpper"></div>
+        <div class="slot-row" data-row="backLower"></div>
+      </div>
+
+      <div class="slot-group">
+        <h3>종아리</h3>
+        <div class="slot-row" data-row="calfLeft"></div>
+        <div class="slot-row" data-row="calfRight"></div>
+      </div>
+
+      <div class="slot-group" id="customZoneGroup" hidden>
+        <h3>커스텀 구역</h3>
+        <div id="customZoneRows"></div>
+      </div>
+
+      <div class="slot-group" style="margin-bottom:0;">
+        <h3>하의</h3>
+        <div class="slot-row" data-row="shortsLogo"></div>
+      </div>
+
+      <div class="contact-card">
+        <input class="contact-field" id="contact" value="문의 wndnjs1100@gmail.com" maxlength="40">
+        <button class="reset-btn" id="resetBtn" type="button">전체 초기화</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sponsor-history">
+    <h2>지금까지의 협찬 이력</h2>
+    <p class="sub">다양한 브랜드와 함께해온 협찬 경험이 있어요</p>
+    <div class="sponsor-scroll">
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor1.jpg" alt="Kimony 협찬" loading="lazy">
+        <div class="brand">Kimony</div>
+        <div class="desc">무릎 보호대</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor2.jpg" alt="하이뮨 협찬" loading="lazy">
+        <div class="brand">하이뮨</div>
+        <div class="desc">유산균 제품 협찬</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor3.jpg" alt="PEACE 협찬" loading="lazy">
+        <div class="brand">PEACE</div>
+        <div class="desc">LIGHT PRO 라켓</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor4.jpg" alt="NOERROR 협찬" loading="lazy">
+        <div class="brand">NOERROR</div>
+        <div class="desc">폼롤러 · 트레이닝웨어</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor5.jpg" alt="NOERROR 협찬" loading="lazy">
+        <div class="brand">NOERROR</div>
+        <div class="desc">유니폼 티셔츠</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor6.jpg" alt="NOERROR 협찬" loading="lazy">
+        <div class="brand">NOERROR</div>
+        <div class="desc">유니폼 하의</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor7.jpg" alt="PJB 협찬" loading="lazy">
+        <div class="brand">PJB</div>
+        <div class="desc">LAYER 800 라켓</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor8.jpg" alt="PJB Sports 협찬" loading="lazy">
+        <div class="brand">PJB Sports</div>
+        <div class="desc">반팔 티셔츠</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor9.jpg" alt="NOERROR 커스텀 유니폼" loading="lazy">
+        <div class="brand">NOERROR</div>
+        <div class="desc">커스텀 유니폼 (이름 각인)</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor10.jpg" alt="Mizuno 협찬" loading="lazy">
+        <div class="brand">Mizuno</div>
+        <div class="desc">유니폼 티셔츠</div>
+      </div>
+      <div class="sponsor-card">
+        <img src="sponsors/sponsor11.jpg" alt="Kimony 협찬" loading="lazy">
+        <div class="brand">Kimony</div>
+        <div class="desc">무릎 보호대 KNP9710</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<input type="file" id="fileInput" accept="image/*">
+
+<div class="toast-host" id="toastHost" aria-live="polite"></div>
+
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal-card">
+    <h3 class="modal-title" id="modalTitle"></h3>
+    <p class="modal-desc" id="modalDesc"></p>
+    <div class="modal-fields" id="modalFields"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="modalCancelBtn" type="button">취소</button>
+      <button class="btn-solid" id="modalConfirmBtn" type="button">확인</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "sponsor-mannequin-state-v1";
+  var MIN_BID = 50000;
+  var EVENT_DATE = new Date(2026, 9, 10);   // 10월 10일 대회
+  var BID_DEADLINE = new Date(2026, 8, 30); // 9월 30일 입찰 마감 (유니폼 프린팅 시간 확보)
+  var CONTACT_EMAIL = "wndnjs1100@gmail.com";
+
+  // Google Apps Script 웹앱 URL을 배포 후 여기에 붙여넣으면, 그 순간부터
+  // 이 페이지에 접속하는 누구나 같은 입찰 현황을 보고 경쟁하게 됩니다.
+  // 아직 안 넣었다면 지금처럼 이 브라우저에서만 보이는 로컬 저장으로 동작합니다.
+  var API_URL = "REPLACE_WITH_YOUR_APPS_SCRIPT_WEB_APP_URL";
+
+  function isBackendConfigured(){
+    return !!API_URL && API_URL.indexOf("REPLACE_WITH") !== 0;
+  }
+
+  var ZONES = [
+    {id:"chestLeft",   label:"왼쪽 가슴",   group:"front"},
+    {id:"chestRight",  label:"오른쪽 가슴", group:"front"},
+    {id:"stomach",     label:"배",          group:"front"},
+    {id:"backUpper",   label:"등 위쪽",     group:"back"},
+    {id:"backLower",   label:"등 아래쪽",   group:"back"},
+    {id:"calfLeft",    label:"왼쪽 종아리 (세로형)", group:"back"},
+    {id:"calfRight",   label:"오른쪽 종아리 (세로형)", group:"back"},
+    {id:"shortsLogo",  label:"하의 로고",   group:"front"}
+  ];
+  var LABELS = {};
+
+  var defaultState = {
+    athleteName: "강주원",
+    eventLabel: "9월 배드민턴 대회 출전 · 유니폼에 로고를 실어드립니다",
+    contact: "문의 wndnjs1100@gmail.com",
+    zones: {}
+  };
+  ZONES.forEach(function(z){ defaultState.zones[z.id] = {image:null, price:"", bidder:""}; });
+
+  var state = JSON.parse(JSON.stringify(defaultState));
+
+  // 이름/소개문구/연락처는 계속 이 브라우저에만 저장됩니다 (본인이 한 번 정해두는 값이라
+  // 굳이 서버까지 안 가도 돼요). 실제 입찰 데이터(zones)만 아래에서 서버와 동기화합니다.
+  function loadProfile(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      var parsed = JSON.parse(raw);
+      if(parsed.athleteName) state.athleteName = parsed.athleteName;
+      if(parsed.eventLabel) state.eventLabel = parsed.eventLabel;
+      if(parsed.contact) state.contact = parsed.contact;
+      if(!isBackendConfigured() && parsed.zones){
+        ZONES.forEach(function(z){
+          if(parsed.zones[z.id]){
+            state.zones[z.id].image = parsed.zones[z.id].image || null;
+            state.zones[z.id].price = parsed.zones[z.id].price || "";
+            state.zones[z.id].bidder = parsed.zones[z.id].bidder || "";
+          }
+        });
+      }
+    }catch(e){ /* storage unavailable — continue with defaults */ }
+  }
+
+  function persist(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ /* quota or privacy mode — ignore */ }
+  }
+
+  async function loadZonesFromServer(){
+    if(!isBackendConfigured()) return;
+    try{
+      var res = await fetch(API_URL, { method: "GET" });
+      var data = await res.json();
+      if(data && data.zones){
+        var knownIds = ZONES.map(function(z){ return z.id; });
+        Object.keys(data.zones).forEach(function(zoneId){
+          var remote = data.zones[zoneId];
+          if(knownIds.indexOf(zoneId) === -1 && remote && remote.custom){
+            // 다른 방문자가 새로 추가한 커스텀 구역 — 내 화면에도 만들어줌
+            createCustomZone(zoneId, remote.label || zoneId, remote.view || "front", {
+              x: parseFloat(remote.x) || 0, y: parseFloat(remote.y) || 0,
+              w: parseFloat(remote.w) || 60, h: parseFloat(remote.h) || 60
+            });
+          }
+        });
+        ZONES.forEach(function(z){
+          var remote = data.zones[z.id];
+          state.zones[z.id].bidder = (remote && remote.bidder) || "";
+          state.zones[z.id].price = (remote && remote.price) || "";
+          state.zones[z.id].image = (remote && remote.image) || null;
+        });
+      }
+    }catch(err){
+      showToast("서버에서 최신 입찰 현황을 불러오지 못했어요.", "error");
+    }
+  }
+
+  function setImageHref(el, url){
+    if(url){
+      el.setAttribute("href", url);
+      el.setAttributeNS("http://www.w3.org/1999/xlink", "href", url);
+    } else {
+      el.removeAttribute("href");
+      el.removeAttributeNS("http://www.w3.org/1999/xlink", "href");
+    }
+  }
+
+  function renderZone(id){
+    var data = state.zones[id];
+    var draft = draftImages[id] || null;
+    var displayImage = draft || data.image;
+    document.querySelectorAll('[data-zone-image="'+id+'"]').forEach(function(img){ setImageHref(img, displayImage); });
+    document.querySelectorAll('.zone[data-zone="'+id+'"]').forEach(function(g){
+      g.classList.toggle("draft", !!draft);
+      g.classList.toggle("filled", !draft && !!data.image);
+    });
+    var row = document.querySelector('.slot-row[data-row="'+id+'"]');
+    if(row){
+      row.classList.toggle("draft", !!draft);
+      row.classList.toggle("filled", !draft && !!data.image);
+    }
+    var thumb = document.querySelector('[data-thumb="'+id+'"]');
+    if(thumb){
+      thumb.classList.toggle("filled", !!displayImage);
+      thumb.style.backgroundImage = displayImage ? "url("+displayImage+")" : "none";
+    }
+    var uploadBtn = document.querySelector('[data-upload="'+id+'"]');
+    if(uploadBtn) uploadBtn.textContent = draft ? "다시 선택" : (data.image ? "재입찰" : "업로드");
+    var confirmBtn = document.querySelector('[data-confirm="'+id+'"]');
+    if(confirmBtn) confirmBtn.hidden = !draft;
+    var removeBtn = document.querySelector('[data-remove-btn="'+id+'"]');
+    if(removeBtn){
+      removeBtn.hidden = !draft && !data.image;
+      removeBtn.textContent = draft ? "취소" : "삭제";
+    }
+    var priceEl = document.querySelector('[data-price="'+id+'"] .slot-price-text');
+    if(priceEl){
+      if(draft){
+        priceEl.textContent = "미리보기 중 · 확정 전";
+      } else {
+        var p = parseInt(data.price, 10) || 0;
+        priceEl.textContent = p > 0
+          ? ((data.bidder ? data.bidder + " · " : "") + p.toLocaleString("ko-KR") + "원 · 확정됨")
+          : ("최소 입찰가 " + MIN_BID.toLocaleString("ko-KR") + "원");
+      }
+    }
+  }
+
+  function renderProgress(){
+    var filled = ZONES.filter(function(z){ return !!state.zones[z.id].image; }).length;
+    document.getElementById("progressText").textContent = filled + " / " + ZONES.length + " 확정됨";
+    document.getElementById("progressFill").style.width = Math.round(filled/ZONES.length*100) + "%";
+  }
+
+  function formatDday(days){
+    if(days > 0) return "D-" + days;
+    if(days === 0) return "D-DAY";
+    return "종료";
+  }
+
+  function daysUntil(target){
+    var now = new Date();
+    var t = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+    var n = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.round((t - n) / 86400000);
+  }
+
+  function isBiddingClosed(){
+    return daysUntil(BID_DEADLINE) < 0;
+  }
+
+  function renderDday(){
+    var eDays = daysUntil(EVENT_DATE);
+    var bDays = daysUntil(BID_DEADLINE);
+    document.getElementById("eventBadge").innerHTML =
+      '<span class="dot"></span>대회 ' + formatDday(eDays) + ' · 10월 10일';
+    var deadlineBadge = document.getElementById("deadlineBadge");
+    if(bDays >= 0){
+      deadlineBadge.innerHTML = '<span class="dot"></span>입찰 마감 ' + formatDday(bDays) + ' · 9월 30일';
+      deadlineBadge.classList.remove("badge-closed");
+      deadlineBadge.classList.add("badge-deadline");
+    } else {
+      deadlineBadge.innerHTML = '<span class="dot"></span>입찰 마감됨 · 인쇄 준비 중';
+      deadlineBadge.classList.remove("badge-deadline");
+      deadlineBadge.classList.add("badge-closed");
+    }
+  }
+
+  function renderAll(){
+    ZONES.forEach(function(z){ renderZone(z.id); });
+    renderProgress();
+    renderDday();
+    document.getElementById("athleteName").value = state.athleteName;
+    document.getElementById("eventLabel").value = state.eventLabel;
+    document.getElementById("contact").value = state.contact;
+  }
+
+  async function setZoneBid(id, price, url, bidder){
+    var label = LABELS[id] || id;
+    var confirmBtn = document.querySelector('[data-confirm="'+id+'"]');
+    if(isBackendConfigured()){
+      if(confirmBtn){ confirmBtn.disabled = true; confirmBtn.textContent = "저장 중..."; }
+      try{
+        var res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ zoneId:id, label:label, bidder:bidder, price:price, imageBase64:url })
+        });
+        var data = await res.json();
+        if(!data || !data.success) throw new Error("save failed");
+        if(data.imageUrl) url = data.imageUrl; // 서버(드라이브)에 저장된 실제 링크로 교체
+      }catch(err){
+        showToast("서버 저장에 실패했어요. 네트워크를 확인하고 다시 시도해주세요.", "error");
+        if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = "확정"; }
+        return false;
+      }
+      if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = "확정"; }
+    }
+    state.zones[id].price = price;
+    state.zones[id].image = url;
+    state.zones[id].bidder = bidder || "";
+    draftImages[id] = null;
+    renderZone(id);
+    renderProgress();
+    if(!isBackendConfigured()) persist();
+    return true;
+  }
+
+  async function clearZone(id){
+    if(draftImages[id]){
+      draftImages[id] = null;
+      renderZone(id);
+      return;
+    }
+    var label = LABELS[id] || id;
+    if(isBackendConfigured()){
+      try{
+        var res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ zoneId:id, label:label, action:"clear" })
+        });
+        var data = await res.json();
+        if(!data || !data.success) throw new Error("clear failed");
+      }catch(err){
+        showToast("삭제에 실패했어요. 다시 시도해주세요.", "error");
+        return;
+      }
+    }
+    state.zones[id].image = null;
+    state.zones[id].price = "";
+    state.zones[id].bidder = "";
+    renderZone(id);
+    renderProgress();
+    if(!isBackendConfigured()) persist();
+  }
+
+  function optimizeImage(file, callback){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var original = e.target.result;
+      var img = new Image();
+      img.onload = function(){
+        try{
+          var maxDim = 480;
+          var w = img.naturalWidth || img.width;
+          var h = img.naturalHeight || img.height;
+          var scale = Math.min(1, maxDim / Math.max(w, h));
+          var cw = Math.max(1, Math.round(w * scale));
+          var ch = Math.max(1, Math.round(h * scale));
+          var canvas = document.createElement("canvas");
+          canvas.width = cw;
+          canvas.height = ch;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, cw, ch);
+          callback(canvas.toDataURL("image/jpeg", 0.85));
+        }catch(err){
+          callback(original);
+        }
+      };
+      img.onerror = function(){ callback(original); };
+      img.src = original;
+    };
+    reader.onerror = function(){ /* unreadable file — ignore */ };
+    reader.readAsDataURL(file);
+  }
+
+  var currentUploadZone = null;
+  var draftImages = {};
+  var fileInput = document.getElementById("fileInput");
+  var flipEl = document.getElementById("flip");
+  var viewToggle = document.getElementById("viewToggle");
+
+  function setView(view){
+    var back = view === "back";
+    flipEl.classList.toggle("flipped", back);
+    viewToggle.classList.toggle("is-back", back);
+    viewToggle.querySelectorAll("button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === view); });
+  }
+
+  function ensureViewFor(id){
+    var meta = ZONES.filter(function(z){ return z.id === id; })[0];
+    if(!meta || meta.group === "both") return;
+    setView(meta.group);
+  }
+
+  // ===================== 커스텀 구역(광고주가 직접 추가하는 위치) =====================
+  var SVG_NS = "http://www.w3.org/2000/svg";
+
+  function registerZoneMeta(id, label, group){
+    ZONES.push({id:id, label:label, group:group});
+    LABELS[id] = label;
+    if(!state.zones[id]) state.zones[id] = {image:null, price:"", bidder:""};
+  }
+
+  function buildZoneSvgGroup(id, rect){
+    var clip = document.createElementNS(SVG_NS, "clipPath");
+    clip.id = "clip-" + id;
+    var clipRect = document.createElementNS(SVG_NS, "rect");
+    clipRect.setAttribute("x", rect.x); clipRect.setAttribute("y", rect.y);
+    clipRect.setAttribute("width", rect.w); clipRect.setAttribute("height", rect.h);
+    clipRect.setAttribute("rx", 10);
+    clip.appendChild(clipRect);
+
+    var g = document.createElementNS(SVG_NS, "g");
+    g.setAttribute("class", "zone");
+    g.dataset.zone = id;
+
+    var img = document.createElementNS(SVG_NS, "image");
+    img.dataset.zoneImage = id;
+    img.setAttribute("clip-path", "url(#clip-" + id + ")");
+    img.setAttribute("x", rect.x); img.setAttribute("y", rect.y);
+    img.setAttribute("width", rect.w); img.setAttribute("height", rect.h);
+    img.setAttribute("preserveAspectRatio", "xMidYMid slice");
+
+    var visRect = document.createElementNS(SVG_NS, "rect");
+    visRect.setAttribute("class", "zone-rect");
+    visRect.setAttribute("x", rect.x); visRect.setAttribute("y", rect.y);
+    visRect.setAttribute("width", rect.w); visRect.setAttribute("height", rect.h);
+    visRect.setAttribute("rx", 10);
+
+    var cx = rect.x + rect.w/2, cy = rect.y + rect.h/2;
+    var r = Math.max(10, Math.min(18, Math.min(rect.w, rect.h)/3));
+    var badge = document.createElementNS(SVG_NS, "g");
+    badge.setAttribute("class", "zone-badge");
+    var circle = document.createElementNS(SVG_NS, "circle");
+    circle.setAttribute("cx", cx); circle.setAttribute("cy", cy); circle.setAttribute("r", r);
+    var l1 = document.createElementNS(SVG_NS, "line");
+    l1.setAttribute("x1", cx-r*0.6); l1.setAttribute("y1", cy); l1.setAttribute("x2", cx+r*0.6); l1.setAttribute("y2", cy);
+    var l2 = document.createElementNS(SVG_NS, "line");
+    l2.setAttribute("x1", cx); l2.setAttribute("y1", cy-r*0.6); l2.setAttribute("x2", cx); l2.setAttribute("y2", cy+r*0.6);
+    badge.appendChild(circle); badge.appendChild(l1); badge.appendChild(l2);
+
+    var hit = document.createElementNS(SVG_NS, "rect");
+    hit.setAttribute("class", "zone-hit");
+    hit.setAttribute("x", rect.x); hit.setAttribute("y", rect.y);
+    hit.setAttribute("width", rect.w); hit.setAttribute("height", rect.h);
+    hit.setAttribute("rx", 10);
+
+    var removeG = document.createElementNS(SVG_NS, "g");
+    removeG.setAttribute("class", "zone-remove");
+    removeG.dataset.zoneRemove = id;
+    var rx = rect.x + rect.w - 4, ry = rect.y + 4;
+    var rc = document.createElementNS(SVG_NS, "circle");
+    rc.setAttribute("cx", rx); rc.setAttribute("cy", ry); rc.setAttribute("r", 13);
+    var rl1 = document.createElementNS(SVG_NS, "line");
+    rl1.setAttribute("x1", rx-4.5); rl1.setAttribute("y1", ry-4.5); rl1.setAttribute("x2", rx+4.5); rl1.setAttribute("y2", ry+4.5);
+    var rl2 = document.createElementNS(SVG_NS, "line");
+    rl2.setAttribute("x1", rx+4.5); rl2.setAttribute("y1", ry-4.5); rl2.setAttribute("x2", rx-4.5); rl2.setAttribute("y2", ry+4.5);
+    removeG.appendChild(rc); removeG.appendChild(rl1); removeG.appendChild(rl2);
+
+    g.appendChild(img); g.appendChild(visRect); g.appendChild(badge); g.appendChild(hit); g.appendChild(removeG);
+    return {clip: clip, group: g};
+  }
+
+  function createCustomZone(id, label, view, rect){
+    registerZoneMeta(id, label, view);
+    var svg = document.querySelector('.face.' + view + ' .zone-overlay') ||
+              (view === "front" ? document.querySelector('.face.front .zone-overlay') : document.querySelector('.face.back .zone-overlay'));
+    var built = buildZoneSvgGroup(id, rect);
+    svg.appendChild(built.clip);
+    svg.appendChild(built.group);
+
+    var groupSection = document.getElementById("customZoneGroup");
+    groupSection.hidden = false;
+    var row = buildSidebarRow(id, true);
+    document.getElementById("customZoneRows").appendChild(row);
+
+    renderZone(id);
+    renderProgress();
+  }
+
+  async function openAddZoneModal(view, rect){
+    showModal({
+      title: "새 광고 위치 추가",
+      desc: "이 위치에 붙일 이름을 정해주세요 (예: 오른쪽 어깨, 모자 등). 추가하면 다른 병원도 여기에 입찰할 수 있어요.",
+      fields: [{key:"label", label:"위치 이름", placeholder:"예: 오른쪽 어깨"}],
+      confirmLabel: "추가",
+      onConfirm: async function(values){
+        var label = (values.label || "").trim();
+        if(!label){ showToast("이름을 입력해주세요.", "error"); return; }
+        var id = "custom_" + Date.now();
+        if(isBackendConfigured()){
+          try{
+            var res = await fetch(API_URL, {
+              method: "POST",
+              body: JSON.stringify({ zoneId:id, label:label, action:"addZone", view:view, x:rect.x, y:rect.y, w:rect.w, h:rect.h })
+            });
+            var data = await res.json();
+            if(!data || !data.success) throw new Error("addZone failed");
+          }catch(err){
+            showToast("위치 추가에 실패했어요. 다시 시도해주세요.", "error");
+            return;
+          }
+        }
+        createCustomZone(id, label, view, rect);
+        showToast("'" + label + "' 위치를 추가했어요.", "success");
+      }
+    });
+  }
+
+  async function deleteCustomZone(id){
+    var current = parseInt(state.zones[id] ? state.zones[id].price : 0, 10) || 0;
+    if(current > 0){
+      showToast("이미 확정된 입찰이 있는 위치는 삭제할 수 없어요.", "error");
+      return;
+    }
+    if(isBackendConfigured()){
+      try{
+        var res = await fetch(API_URL, { method:"POST", body: JSON.stringify({ zoneId:id, action:"deleteZone" }) });
+        var data = await res.json();
+        if(!data || !data.success) throw new Error("delete failed");
+      }catch(err){
+        showToast("삭제에 실패했어요. 다시 시도해주세요.", "error");
+        return;
+      }
+    }
+    document.querySelectorAll('.zone[data-zone="'+id+'"]').forEach(function(g){
+      var clip = document.getElementById("clip-"+id);
+      if(clip) clip.remove();
+      g.remove();
+    });
+    var row = document.querySelector('.slot-row[data-row="'+id+'"]');
+    if(row) row.remove();
+    ZONES = ZONES.filter(function(z){ return z.id !== id; });
+    delete LABELS[id];
+    delete state.zones[id];
+    delete draftImages[id];
+    if(!document.getElementById("customZoneRows").children.length){
+      document.getElementById("customZoneGroup").hidden = true;
+    }
+    renderProgress();
+    showToast("위치를 삭제했어요.", "success");
+  }
+
+  function svgPointFromEvent(svg, clientX, clientY){
+    var pt = svg.createSVGPoint();
+    pt.x = clientX; pt.y = clientY;
+    var ctm = svg.getScreenCTM();
+    if(!ctm) return {x:0, y:0};
+    return pt.matrixTransform(ctm.inverse());
+  }
+
+  (function setupDrawMode(){
+    var addBtn = document.getElementById("addZoneBtn");
+    var drawMode = false;
+    var drawStart = null;
+    var previewEl = null;
+
+    function eventXY(e){
+      if(e.touches && e.touches[0]) return {x:e.touches[0].clientX, y:e.touches[0].clientY};
+      return {x:e.clientX, y:e.clientY};
+    }
+
+    function endDraw(){
+      drawMode = false;
+      document.querySelectorAll(".zone-overlay").forEach(function(s){ s.classList.remove("drawing"); });
+      if(previewEl){ previewEl.remove(); previewEl = null; }
+      drawStart = null;
+    }
+
+    addBtn.addEventListener("click", function(){
+      if(isBiddingClosed()){
+        showToast("입찰이 마감돼서 새 위치를 추가할 수 없어요.", "error");
+        return;
+      }
+      if(drawMode){ endDraw(); return; }
+      drawMode = true;
+      document.querySelectorAll(".zone-overlay").forEach(function(s){ s.classList.add("drawing"); });
+      showToast("사진 위에서 원하는 위치를 드래그해서 사각형을 그려주세요", "success");
+    });
+
+    document.querySelectorAll(".zone-overlay").forEach(function(svg){
+      var view = svg.closest(".face").classList.contains("back") ? "back" : "front";
+
+      function start(e){
+        if(!drawMode) return;
+        e.preventDefault();
+        var xy = eventXY(e);
+        var p = svgPointFromEvent(svg, xy.x, xy.y);
+        drawStart = {x:p.x, y:p.y};
+        previewEl = document.createElementNS(SVG_NS, "rect");
+        previewEl.setAttribute("class", "draw-preview");
+        previewEl.setAttribute("x", p.x); previewEl.setAttribute("y", p.y);
+        previewEl.setAttribute("width", 0); previewEl.setAttribute("height", 0);
+        svg.appendChild(previewEl);
+      }
+      function move(e){
+        if(!drawMode || !drawStart) return;
+        e.preventDefault();
+        var xy = eventXY(e);
+        var p = svgPointFromEvent(svg, xy.x, xy.y);
+        var x = Math.min(p.x, drawStart.x), y = Math.min(p.y, drawStart.y);
+        var w = Math.abs(p.x - drawStart.x), h = Math.abs(p.y - drawStart.y);
+        previewEl.setAttribute("x", x); previewEl.setAttribute("y", y);
+        previewEl.setAttribute("width", w); previewEl.setAttribute("height", h);
+      }
+      function finish(e){
+        if(!drawMode || !drawStart) return;
+        var xy = e.changedTouches ? {x:e.changedTouches[0].clientX, y:e.changedTouches[0].clientY} : eventXY(e);
+        var p = svgPointFromEvent(svg, xy.x, xy.y);
+        var x = Math.min(p.x, drawStart.x), y = Math.min(p.y, drawStart.y);
+        var w = Math.abs(p.x - drawStart.x), h = Math.abs(p.y - drawStart.y);
+        endDraw();
+        if(w < 20 || h < 20){
+          showToast("영역이 너무 작아요. 다시 그려주세요.", "error");
+          return;
+        }
+        openAddZoneModal(view, {x:x, y:y, w:w, h:h});
+      }
+
+      svg.addEventListener("mousedown", start);
+      svg.addEventListener("mousemove", move);
+      svg.addEventListener("mouseup", finish);
+      svg.addEventListener("touchstart", start, {passive:false});
+      svg.addEventListener("touchmove", move, {passive:false});
+      svg.addEventListener("touchend", finish);
+    });
+  })();
+
+  function showToast(message, type){
+    var host = document.getElementById("toastHost");
+    var toast = document.createElement("div");
+    toast.className = "toast" + (type ? " toast-" + type : "");
+    toast.textContent = message;
+    host.appendChild(toast);
+    requestAnimationFrame(function(){ toast.classList.add("show"); });
+    setTimeout(function(){
+      toast.classList.remove("show");
+      setTimeout(function(){ toast.remove(); }, 300);
+    }, 3200);
+  }
+
+  function showModal(opts){
+    var overlay = document.getElementById("modalOverlay");
+    var fieldsHost = document.getElementById("modalFields");
+    var confirmBtn = document.getElementById("modalConfirmBtn");
+    var cancelBtn = document.getElementById("modalCancelBtn");
+    var fields = opts.fields || [];
+
+    document.getElementById("modalTitle").textContent = opts.title || "";
+    document.getElementById("modalDesc").textContent = opts.desc || "";
+    confirmBtn.textContent = opts.confirmLabel || "확인";
+    cancelBtn.textContent = opts.cancelLabel || "취소";
+
+    fieldsHost.innerHTML = "";
+    var inputEls = {};
+    fields.forEach(function(f){
+      var wrap = document.createElement("div");
+      wrap.className = "modal-field";
+      var label = document.createElement("label");
+      label.textContent = f.label;
+      var inputEl = document.createElement("input");
+      inputEl.type = "text";
+      inputEl.inputMode = f.numeric ? "numeric" : "text";
+      inputEl.autocomplete = "off";
+      inputEl.placeholder = f.placeholder || "";
+      inputEl.value = f.value || "";
+      if(f.numeric){
+        inputEl.addEventListener("input", function(){
+          var digits = inputEl.value.replace(/[^0-9]/g, "");
+          inputEl.value = digits ? parseInt(digits, 10).toLocaleString("ko-KR") : "";
+        });
+      }
+      wrap.appendChild(label);
+      wrap.appendChild(inputEl);
+      fieldsHost.appendChild(wrap);
+      inputEls[f.key] = inputEl;
+    });
+
+    overlay.hidden = false;
+    var firstInput = fields.length ? inputEls[fields[0].key] : null;
+    if(firstInput){ setTimeout(function(){ firstInput.focus(); firstInput.select(); }, 50); }
+
+    function collectValues(){
+      var out = {};
+      fields.forEach(function(f){ out[f.key] = inputEls[f.key].value; });
+      return out;
+    }
+
+    function cleanup(){
+      overlay.hidden = true;
+      confirmBtn.removeEventListener("click", onConfirmClick);
+      cancelBtn.removeEventListener("click", onCancelClick);
+      overlay.removeEventListener("click", onOverlayClick);
+      fields.forEach(function(f){ inputEls[f.key].onkeydown = null; });
+    }
+    function onConfirmClick(){
+      var values = collectValues();
+      cleanup();
+      if(opts.onConfirm) opts.onConfirm(values);
+    }
+    function onCancelClick(){
+      cleanup();
+      if(opts.onCancel) opts.onCancel();
+    }
+    function onOverlayClick(e){ if(e.target === overlay) onCancelClick(); }
+
+    confirmBtn.addEventListener("click", onConfirmClick);
+    cancelBtn.addEventListener("click", onCancelClick);
+    overlay.addEventListener("click", onOverlayClick);
+    fields.forEach(function(f){
+      inputEls[f.key].onkeydown = function(e){ if(e.key === "Enter") onConfirmClick(); };
+    });
+  }
+
+  function triggerUpload(id){
+    if(isBiddingClosed()){
+      showToast("입찰이 마감됐어요. 9월 30일 이후로는 새 로고를 받을 수 없어요.", "error");
+      return;
+    }
+    ensureViewFor(id);
+    currentUploadZone = id;
+    fileInput.value = "";
+    fileInput.click();
+  }
+
+  fileInput.addEventListener("change", function(e){
+    var file = e.target.files && e.target.files[0];
+    var zoneId = currentUploadZone;
+    currentUploadZone = null;
+    if(!file || !zoneId) return;
+    if(file.type.indexOf("image/") !== 0){
+      showToast("이미지 파일만 올릴 수 있어요.", "error");
+      return;
+    }
+    optimizeImage(file, function(dataUrl){
+      draftImages[zoneId] = dataUrl;
+      renderZone(zoneId);
+      showToast("미리보기가 적용됐어요 · 확정 버튼을 눌러 마무리하세요");
+    });
+  });
+
+  function offerEmailNotify(id, label, bidderName, bid){
+    showModal({
+      title: "담당자에게 알리기",
+      desc: bidderName + "님, 입찰 감사해요!\n이 페이지는 담당자 화면에 자동으로 뜨지 않아서, 아래 버튼으로 이메일 한 통만 보내주시면 확정 처리가 훨씬 빨라져요.\n(로고 이미지 파일은 이메일에 직접 첨부해주세요)",
+      fields: [],
+      confirmLabel: "이메일 보내기",
+      cancelLabel: "나중에",
+      onConfirm: function(){
+        var subject = "[스폰서 입찰] " + label + " - " + bidderName;
+        var body = "구역: " + label + "\n기관명: " + bidderName + "\n입찰 금액: " + bid.toLocaleString("ko-KR") + "원" +
+          "\n\n※ 이 페이지에서 미리 본 로고 이미지 파일을 이 메일에 첨부해서 보내주세요.";
+        window.location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      }
+    });
+  }
+
+  function triggerConfirm(id){
+    var draft = draftImages[id];
+    if(!draft){
+      showToast("먼저 로고 이미지를 업로드해서 미리보기를 확인하세요.", "error");
+      return;
+    }
+    if(isBiddingClosed()){
+      showToast("입찰이 마감됐어요. 9월 30일 이후로는 확정할 수 없어요.", "error");
+      return;
+    }
+    var current = parseInt(state.zones[id].price, 10) || 0;
+    var minRequired = current > 0 ? current + 1 : MIN_BID;
+    var label = LABELS[id] || id;
+    showModal({
+      title: label + " 확정",
+      desc: current > 0
+        ? ("현재 입찰가는 " + current.toLocaleString("ko-KR") + "원이에요.\n더 높은 금액을 입력하고 확정하세요.")
+        : ("최소 입찰가는 " + MIN_BID.toLocaleString("ko-KR") + "원이에요.\n기관명과 입찰 금액을 입력하세요."),
+      fields: [
+        {key:"bidder", label:"기관/병원명", placeholder:"예: 서울재활의원", value: state.zones[id].bidder || ""},
+        {key:"amount", label:"입찰 금액 (원)", placeholder:String(minRequired), value: String(minRequired), numeric:true}
+      ],
+      confirmLabel: "확정",
+      onConfirm: async function(values){
+        var bidderName = (values.bidder || "").trim();
+        var bid = parseInt(String(values.amount).replace(/[^0-9]/g, ""), 10);
+        if(!bidderName){
+          showToast("기관/병원명을 입력해주세요.", "error");
+          return;
+        }
+        if(!bid || bid < minRequired){
+          showToast("최소 " + minRequired.toLocaleString("ko-KR") + "원 이상 입력해야 해요.", "error");
+          return;
+        }
+        var saved = await setZoneBid(id, bid, draft, bidderName);
+        if(!saved) return; // setZoneBid already showed the error toast
+        showToast(label + " 확정! " + bidderName + " · " + bid.toLocaleString("ko-KR") + "원", "success");
+        offerEmailNotify(id, label, bidderName, bid);
+      }
+    });
+  }
+
+  // 이벤트 위임: 나중에 동적으로 추가되는 커스텀 구역에도 그대로 적용됩니다.
+  document.body.addEventListener("click", function(ev){
+    var hit = ev.target.closest(".zone-hit");
+    if(hit){
+      triggerUpload(hit.closest(".zone").dataset.zone);
+      return;
+    }
+    var rm = ev.target.closest(".zone-remove");
+    if(rm){
+      ev.stopPropagation();
+      clearZone(rm.dataset.zoneRemove);
+      return;
+    }
+  });
+
+  viewToggle.querySelectorAll("button").forEach(function(btn){
+    btn.addEventListener("click", function(){ setView(btn.dataset.view); });
+  });
+
+  document.getElementById("refreshBtn").addEventListener("click", async function(){
+    var btn = this;
+    if(!isBackendConfigured()){
+      showToast("아직 서버 연동 전이라 이 브라우저에 저장된 내용만 보여요.", "error");
+      return;
+    }
+    btn.disabled = true;
+    var original = btn.textContent;
+    btn.textContent = "새로고침 중...";
+    await loadZonesFromServer();
+    renderAll();
+    btn.disabled = false;
+    btn.textContent = original;
+    showToast("최신 입찰 현황을 불러왔어요.", "success");
+  });
+
+  ZONES.forEach(function(z){ LABELS[z.id] = z.label; });
+
+  function buildSidebarRow(id, isCustom){
+    var row = document.createElement("div");
+    row.className = "slot-row";
+    row.dataset.row = id;
+    row.innerHTML =
+      '<div class="slot-thumb" data-thumb="'+id+'"><span class="slot-thumb-plus">+</span></div>' +
+      '<div class="slot-info">' +
+        '<div class="slot-label">'+LABELS[id]+'</div>' +
+        '<div class="slot-price" data-price="'+id+'"><span class="dot"></span><span class="slot-price-text"></span></div>' +
+      '</div>' +
+      '<div class="slot-actions">' +
+        '<button class="btn-ghost" data-upload="'+id+'" type="button">업로드</button>' +
+        '<button class="btn-solid" data-confirm="'+id+'" hidden type="button">확정</button>' +
+        '<button class="btn-text" data-remove-btn="'+id+'" hidden type="button">삭제</button>' +
+        (isCustom ? '<button class="btn-text" data-delete-zone="'+id+'" type="button">위치 삭제</button>' : '') +
+      '</div>';
+    return row;
+  }
+
+  // 기존 8개 구역: 이미 있는 빈 slot-row에 내용 채우기
+  document.querySelectorAll(".slot-row[data-row]").forEach(function(placeholder){
+    var id = placeholder.dataset.row;
+    var built = buildSidebarRow(id, false);
+    placeholder.replaceWith(built);
+  });
+
+  // 사이드바 버튼들도 위임 처리 (업로드/확정/삭제/위치삭제 전부, 동적 행 포함)
+  document.getElementById("customZoneRows").closest(".panel").addEventListener("click", function(ev){
+    var t = ev.target;
+    if(t.matches('[data-upload]')) triggerUpload(t.dataset.upload);
+    else if(t.matches('[data-confirm]')) triggerConfirm(t.dataset.confirm);
+    else if(t.matches('[data-remove-btn]')) clearZone(t.dataset.removeBtn);
+    else if(t.matches('[data-delete-zone]')) deleteCustomZone(t.dataset.deleteZone);
+  });
+
+  document.getElementById("athleteName").addEventListener("input", function(ev){ state.athleteName = ev.target.value; persist(); });
+  document.getElementById("eventLabel").addEventListener("input", function(ev){ state.eventLabel = ev.target.value; persist(); });
+  document.getElementById("contact").addEventListener("input", function(ev){ state.contact = ev.target.value; persist(); });
+
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    var wipesShared = isBackendConfigured();
+    showModal({
+      title: "전체 초기화",
+      desc: wipesShared
+        ? "이름/소개문구/연락처만 기본값으로 되돌려요. 이미 확정된 입찰은 공용 데이터라 여기서는 지우지 않아요."
+        : "모든 슬롯과 확정된 입찰이 초기화돼요. 되돌릴 수 없어요.",
+      confirmLabel: "초기화",
+      onConfirm: function(){
+        state.athleteName = defaultState.athleteName;
+        state.eventLabel = defaultState.eventLabel;
+        state.contact = defaultState.contact;
+        if(!wipesShared){
+          state.zones = JSON.parse(JSON.stringify(defaultState.zones));
+          try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+        } else {
+          persist();
+        }
+        draftImages = {};
+        renderAll();
+        setView("front");
+        showToast("초기화했어요.", "success");
+      }
+    });
+  });
+
+  (async function init(){
+    loadProfile();
+    renderAll();
+    await loadZonesFromServer();
+    renderAll();
+  })();
+})();
+</script>
+</body>
+</html>
