@@ -195,22 +195,27 @@
   .reset-btn{border:none;background:transparent;color:var(--text-soft);font-size:12.5px;cursor:pointer;text-decoration:underline;}
   .reset-btn:hover{color:var(--danger);}
 
-  .sponsor-history{margin-top:44px;}
-  .sponsor-history h2{
-    font-family:'Oswald',sans-serif;font-weight:600;font-size:20px;margin:0 0 4px;color:var(--text);
+  .process-guide{
+    margin-top:44px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;
   }
-  .sponsor-history .sub{font-size:13px;color:var(--text-soft);margin:0 0 16px;}
-  .sponsor-scroll{
-    display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;
-    scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
+  .process-guide h2{font-family:'Oswald',sans-serif;font-weight:600;font-size:20px;margin:0 0 4px;color:var(--text);}
+  .process-guide .sub{font-size:13px;color:var(--text-soft);margin:0 0 20px;}
+  .process-steps{list-style:none;margin:0;padding:0;counter-reset:step;}
+  .process-steps li{
+    position:relative;padding-left:38px;margin-bottom:16px;font-size:14px;line-height:1.6;color:var(--text);
   }
-  .sponsor-card{flex:0 0 150px;scroll-snap-align:start;}
-  .sponsor-card img{
-    width:150px;height:190px;object-fit:cover;border-radius:12px;border:1px solid var(--border);
-    display:block;background:var(--surface-2);
+  .process-steps li:last-child{margin-bottom:0;}
+  .process-steps li::before{
+    counter-increment:step;content:counter(step);
+    position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;
+    background:var(--gold);color:var(--surface);font-weight:800;font-size:13px;
+    display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;
   }
-  .sponsor-card .brand{font-size:13px;font-weight:800;margin-top:8px;color:var(--text);}
-  .sponsor-card .desc{font-size:11.5px;color:var(--text-soft);margin-top:2px;line-height:1.4;}
+  .process-steps strong{font-weight:800;}
+
+  .sponsor-note{margin-top:18px;font-size:13px;color:var(--text-soft);text-align:center;line-height:1.6;}
+  .sponsor-note a{color:var(--gold);font-weight:700;text-decoration:none;}
+  .sponsor-note a:hover{text-decoration:underline;}
 
   input[type=file]{display:none;}
 
@@ -414,67 +419,22 @@
 
   </div>
 
-  <div class="sponsor-history">
-    <h2>지금까지의 협찬 이력</h2>
-    <p class="sub">다양한 브랜드와 함께해온 협찬 경험이 있어요</p>
-    <div class="sponsor-scroll">
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor1.jpg" alt="Kimony 협찬" loading="lazy">
-        <div class="brand">Kimony</div>
-        <div class="desc">무릎 보호대</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor2.jpg" alt="하이뮨 협찬" loading="lazy">
-        <div class="brand">하이뮨</div>
-        <div class="desc">유산균 제품 협찬</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor3.jpg" alt="PEACE 협찬" loading="lazy">
-        <div class="brand">PEACE</div>
-        <div class="desc">LIGHT PRO 라켓</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor4.jpg" alt="NOERROR 협찬" loading="lazy">
-        <div class="brand">NOERROR</div>
-        <div class="desc">폼롤러 · 트레이닝웨어</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor5.jpg" alt="NOERROR 협찬" loading="lazy">
-        <div class="brand">NOERROR</div>
-        <div class="desc">유니폼 티셔츠</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor6.jpg" alt="NOERROR 협찬" loading="lazy">
-        <div class="brand">NOERROR</div>
-        <div class="desc">유니폼 하의</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor7.jpg" alt="PJB 협찬" loading="lazy">
-        <div class="brand">PJB</div>
-        <div class="desc">LAYER 800 라켓</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor8.jpg" alt="PJB Sports 협찬" loading="lazy">
-        <div class="brand">PJB Sports</div>
-        <div class="desc">반팔 티셔츠</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor9.jpg" alt="NOERROR 커스텀 유니폼" loading="lazy">
-        <div class="brand">NOERROR</div>
-        <div class="desc">커스텀 유니폼 (이름 각인)</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor10.jpg" alt="Mizuno 협찬" loading="lazy">
-        <div class="brand">Mizuno</div>
-        <div class="desc">유니폼 티셔츠</div>
-      </div>
-      <div class="sponsor-card">
-        <img src="sponsors/sponsor11.jpg" alt="Kimony 협찬" loading="lazy">
-        <div class="brand">Kimony</div>
-        <div class="desc">무릎 보호대 KNP9710</div>
-      </div>
-    </div>
+  <div class="process-guide">
+    <h2>진행 프로세스</h2>
+    <p class="sub">낙찰 확정 후 이렇게 진행돼요</p>
+    <ol class="process-steps">
+      <li><strong>낙찰 확정</strong> — 확인 후 이메일로 정식 계약서를 보내드려요</li>
+      <li><strong>계약 체결 &amp; 선금 결제</strong> — 계약금(선급금) 50%를 입금해주시면 진행이 시작돼요</li>
+      <li><strong>샘플 이미지 전달</strong> — 확정하신 로고를 실제로 적용한 샘플 사진 1장을 보내드려서 배치를 확인해요</li>
+      <li><strong>대회 진행 &amp; 노출 인증</strong> — 대회(10월 10일) 종료 후, 해당 구역이 노출된 실제 착용 사진 30장을 촬영해 전달해요</li>
+      <li><strong>잔금 정산</strong> — 사진 확인 후 잔금(나머지 50%)을 정산하면 완료돼요</li>
+    </ol>
   </div>
+
+  <p class="sponsor-note">
+    의류 · 장비 등 다양한 브랜드와 협찬을 진행해온 경험이 있어요 · Instagram
+    <a href="https://www.instagram.com/minton_juwon" target="_blank" rel="noopener">@minton_juwon</a>
+  </p>
 
 </div>
 
