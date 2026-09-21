@@ -71,6 +71,42 @@
   .badge-closed{color:var(--text-soft);border-color:var(--border);}
   .badge-closed .dot{background:var(--text-soft);}
 
+  .hero{
+    margin-bottom:30px;padding:28px 26px 26px;border-radius:18px;
+    background:linear-gradient(155deg, var(--surface) 0%, var(--surface-2) 100%);
+    border:1px solid var(--border);
+  }
+  .hero-eyebrow{
+    display:inline-block;margin:0 0 10px;font-size:12px;font-weight:800;letter-spacing:.05em;
+    color:var(--gold);text-transform:uppercase;
+  }
+  .hero-title{
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:25px;line-height:1.38;margin:0 0 12px;color:var(--text);
+    max-width:620px;
+  }
+  .hero-desc{font-size:14px;line-height:1.75;color:var(--text-soft);margin:0 0 22px;max-width:620px;}
+  .hero-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;}
+  @media (max-width:640px){ .hero-steps{grid-template-columns:1fr;} }
+  .hero-step{display:flex;gap:11px;align-items:flex-start;font-size:13.5px;line-height:1.55;color:var(--text);}
+  .hero-step-num{
+    flex-shrink:0;width:25px;height:25px;border-radius:50%;background:var(--gold);color:var(--surface);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px;font-family:'Manrope',sans-serif;
+    margin-top:1px;
+  }
+  .hero-cta{
+    display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:var(--surface) !important;
+    font-weight:800;font-size:13.5px;padding:11px 20px;border-radius:10px;text-decoration:none;
+  }
+  .hero-cta:hover{opacity:.9;}
+
+  @keyframes zonePulse{ 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
+  .zone:not(.filled):not(.draft) .zone-rect,
+  .zone:not(.filled):not(.draft) .zone-badge{ animation:zonePulse 2.3s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce){
+    .zone:not(.filled):not(.draft) .zone-rect,
+    .zone:not(.filled):not(.draft) .zone-badge{ animation:none; }
+  }
+
   .layout{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:36px;align-items:start;}
   @media (max-width:840px){ .layout{grid-template-columns:1fr;} }
 
@@ -216,9 +252,31 @@
   .sponsor-note{margin-top:18px;font-size:13px;color:var(--text-soft);text-align:center;line-height:1.6;}
   .sponsor-note a{color:var(--gold);font-weight:700;text-decoration:none;}
   .sponsor-note a:hover{text-decoration:underline;}
-  .sponsor-thumbs{
-    display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:26px;
+  .sponsor-heading{
+    margin:44px 0 0;text-align:center;font-size:13px;font-weight:700;color:var(--text-soft);letter-spacing:.02em;
   }
+  .sponsor-thumbs{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px;
+  }
+
+  .faq{
+    margin-top:24px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;
+  }
+  .faq h2{font-family:'Oswald',sans-serif;font-weight:600;font-size:20px;margin:0 0 6px;color:var(--text);}
+  .faq .sub{font-size:13px;color:var(--text-soft);margin:0 0 16px;}
+  .faq details{border-bottom:1px solid var(--border);padding:14px 0;}
+  .faq details:first-of-type{padding-top:0;}
+  .faq details:last-child{border-bottom:none;padding-bottom:0;}
+  .faq summary{
+    cursor:pointer;font-weight:700;font-size:14px;color:var(--text);list-style:none;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+  }
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{
+    content:"+";font-size:20px;font-weight:400;color:var(--gold);flex-shrink:0;transition:transform .2s;line-height:1;
+  }
+  .faq details[open] summary::after{transform:rotate(45deg);}
+  .faq p{margin:10px 0 0;font-size:13.5px;line-height:1.75;color:var(--text-soft);}
   .sponsor-thumbs img{
     width:52px;height:66px;object-fit:cover;border-radius:6px;border:1px solid var(--border);
     display:block;background:var(--surface-2);
@@ -264,6 +322,21 @@
 </head>
 <body>
 <div class="wrap">
+
+  <section class="hero">
+    <p class="hero-eyebrow">병원 · 한의원 광고 제안</p>
+    <h1 class="hero-title">대회 하루, 제 몸 전체가 병원의 광고판이 됩니다</h1>
+    <p class="hero-desc">
+      10월 10일 배드민턴 대회에 출전하는 선수의 유니폼·신체 부위별 광고 자리를, 원하는 병원·한의원이 직접 입찰로 확보하는 페이지예요.
+      최근 하이록스 같은 스포츠 대회에서 선수 개인 스폰서십이 새로운 광고 채널로 주목받고 있어요 — 확정 전까지는 부담 없이 미리보기만 해보셔도 좋아요.
+    </p>
+    <div class="hero-steps">
+      <div class="hero-step"><span class="hero-step-num">1</span><div><strong>자리 클릭</strong><br>아래 사진에서 반짝이는 자리를 눌러보세요</div></div>
+      <div class="hero-step"><span class="hero-step-num">2</span><div><strong>로고 미리보기</strong><br>로고 이미지를 올려서 부담 없이 확인해요</div></div>
+      <div class="hero-step"><span class="hero-step-num">3</span><div><strong>입찰 확정</strong><br>마음에 들면 금액을 적고 확정하면 끝이에요</div></div>
+    </div>
+    <a class="hero-cta" id="heroContactBtn" href="#">궁금한 점 문의하기</a>
+  </section>
 
   <header>
     <div class="title-block">
@@ -382,7 +455,7 @@
         <button class="btn-link" id="refreshBtn" type="button">다른 병원의 최신 입찰 새로고침</button>
       </div>
 
-      <p class="hint" id="mainHint">구역을 클릭해 로고를 올려보고, 마음에 들면 오른쪽에서 확정하세요. 확정 후엔 이메일로 담당자에게 바로 알릴 수 있어요.</p>
+      <p class="hint" id="mainHint">👆 반짝이는 자리를 클릭해서 시작해보세요</p>
     </div>
 
     <div class="panel">
@@ -420,7 +493,10 @@
 
       <div class="contact-card">
         <input class="contact-field" id="contact" value="문의 wndnjs1100@gmail.com" maxlength="40">
-        <button class="reset-btn" id="resetBtn" type="button">전체 초기화</button>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <a class="btn-link" id="contactMailBtn" href="#">이메일 보내기</a>
+          <button class="reset-btn" id="resetBtn" type="button">전체 초기화</button>
+        </div>
       </div>
     </div>
 
@@ -438,6 +514,36 @@
     </ol>
   </div>
 
+  <div class="faq">
+    <h2>자주 묻는 질문</h2>
+    <p class="sub">병원 · 한의원 담당자분들이 자주 물어보시는 내용이에요</p>
+    <details>
+      <summary>세금계산서나 현금영수증 발행이 가능한가요?</summary>
+      <p>사업자등록을 진행해서 세금계산서 · 현금영수증 등 필요한 서류를 발행해드릴 예정이에요. 필요하신 서류 형태를 미리 말씀해주시면 맞춰서 준비할게요.</p>
+    </details>
+    <details>
+      <summary>계약서를 작성하나요?</summary>
+      <p>네, 낙찰이 확정되면 이메일로 정식 계약서를 보내드리고, 서명과 선금(50%) 입금이 확인되면 진행이 시작돼요.</p>
+    </details>
+    <details>
+      <summary>최소 입찰 금액과 재입찰 규정이 궁금해요.</summary>
+      <p>자리별 최소 입찰가는 5만원이에요. 이미 다른 병원이 입찰한 자리는 현재 금액보다 높은 금액으로만 재입찰할 수 있고, 유니폼 인쇄 시간을 확보하기 위해 입찰은 9월 30일까지만 진행돼요.</p>
+    </details>
+    <details>
+      <summary>노출은 어떻게 증명되나요?</summary>
+      <p>대회(10월 10일) 종료 후, 해당 부위가 노출된 실제 착용 사진을 15장 촬영해서 전달해드려요. 경기 중뿐 아니라 대기시간 · 워밍업 · 시상식 등 대회 당일 여러 순간에 노출돼요.</p>
+    </details>
+    <details>
+      <summary>여러 병원이 동시에 이 페이지를 볼 수 있나요?</summary>
+      <p>네, 이 페이지는 실시간으로 공유돼서 여러 병원이 동시에 둘러보고 입찰할 수 있어요. 다른 곳이 이미 확정한 자리는 화면에 바로 표시돼서 헷갈릴 일이 없어요.</p>
+    </details>
+    <details>
+      <summary>원하는 위치가 목록에 없어요.</summary>
+      <p>사진 위의 "+ 새 위치 추가" 버튼으로 원하는 자리를 직접 그려서 새로 만들 수 있어요. 만든 자리는 다른 병원에게도 똑같이 보여요.</p>
+    </details>
+  </div>
+
+  <h3 class="sponsor-heading">지금까지 함께한 협찬</h3>
   <div class="sponsor-thumbs">
     <img src="sponsors/sponsor1.jpg" alt="협찬 사진" loading="lazy">
     <img src="sponsors/sponsor2.jpg" alt="협찬 사진" loading="lazy">
@@ -1286,9 +1392,20 @@
     });
   });
 
+  function wireContactLinks(){
+    var heroBtn = document.getElementById("heroContactBtn");
+    var mailBtn = document.getElementById("contactMailBtn");
+    var subject = encodeURIComponent("광고 슬롯 문의");
+    var body = encodeURIComponent("안녕하세요, 광고 슬롯 관련 문의드립니다.\n\n기관/병원명:\n문의 내용:\n");
+    var href = "mailto:" + CONTACT_EMAIL + "?subject=" + subject + "&body=" + body;
+    if(heroBtn) heroBtn.href = href;
+    if(mailBtn) mailBtn.href = href;
+  }
+
   (async function init(){
     loadProfile();
     renderAll();
+    wireContactLinks();
     await loadZonesFromServer();
     renderAll();
   })();
