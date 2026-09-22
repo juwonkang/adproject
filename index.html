@@ -202,7 +202,9 @@
     background:var(--gold);color:var(--surface);padding:3px 10px;border-radius:999px;
   }
   .slot-confirmed-tag{font-weight:700;font-size:11px;color:var(--gold-strong);white-space:nowrap;}
-  .slot-actions{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+  .slot-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+  .slot-actions-row{display:flex;align-items:center;gap:6px;}
+  .slot-actions-secondary{gap:10px;min-height:0;}
   .btn-ghost{
     border:1px solid var(--gold);color:var(--gold);background:transparent;font-family:'Manrope',sans-serif;
     font-weight:700;font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;
@@ -380,6 +382,8 @@
                 <clipPath id="clip-chestLeft"><rect x="125" y="255" width="85" height="65" rx="14"/></clipPath>
                 <clipPath id="clip-stomach"><rect x="140" y="370" width="160" height="90" rx="16"/></clipPath>
                 <clipPath id="clip-shortsLogo"><rect x="255" y="735" width="60" height="50" rx="10"/></clipPath>
+                <clipPath id="clip-shinLeft"><rect x="95" y="1040" width="44" height="44" rx="8"/></clipPath>
+                <clipPath id="clip-shinRight"><rect x="305" y="1040" width="44" height="44" rx="8"/></clipPath>
 
                 <g class="zone" data-zone="chestLeft">
                   <image data-zone-image="chestLeft" clip-path="url(#clip-chestLeft)" x="125" y="255" width="85" height="65" preserveAspectRatio="xMidYMid slice"/>
@@ -403,6 +407,24 @@
                   <g class="zone-badge"><circle cx="285" cy="760" r="13"/><line x1="278" y1="760" x2="292" y2="760"/><line x1="285" y1="753" x2="285" y2="767"/></g>
                   <rect class="zone-hit" x="255" y="735" width="60" height="50" rx="10"/>
                   <g class="zone-remove" data-zone-remove="shortsLogo"><circle cx="307" cy="745" r="11"/><line x1="303" y1="741" x2="311" y2="749"/><line x1="311" y1="741" x2="303" y2="749"/></g>
+                </g>
+
+                <g class="zone" data-zone="shinLeft">
+                  <rect class="zone-sleeve" x="85" y="1012" width="64" height="100" rx="16"/>
+                  <image data-zone-image="shinLeft" clip-path="url(#clip-shinLeft)" x="95" y="1040" width="44" height="44" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="95" y="1040" width="44" height="44" rx="8"/>
+                  <g class="zone-badge"><circle cx="117" cy="1062" r="13"/><line x1="111" y1="1062" x2="123" y2="1062"/><line x1="117" y1="1056" x2="117" y2="1068"/></g>
+                  <rect class="zone-hit" x="85" y="1012" width="64" height="100" rx="16"/>
+                  <g class="zone-remove" data-zone-remove="shinLeft"><circle cx="138" cy="1024" r="13"/><line x1="133" y1="1019" x2="143" y2="1029"/><line x1="143" y1="1019" x2="133" y2="1029"/></g>
+                </g>
+
+                <g class="zone" data-zone="shinRight">
+                  <rect class="zone-sleeve" x="295" y="1012" width="64" height="100" rx="16"/>
+                  <image data-zone-image="shinRight" clip-path="url(#clip-shinRight)" x="305" y="1040" width="44" height="44" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="305" y="1040" width="44" height="44" rx="8"/>
+                  <g class="zone-badge"><circle cx="327" cy="1062" r="13"/><line x1="321" y1="1062" x2="333" y2="1062"/><line x1="327" y1="1056" x2="327" y2="1068"/></g>
+                  <rect class="zone-hit" x="295" y="1012" width="64" height="100" rx="16"/>
+                  <g class="zone-remove" data-zone-remove="shinRight"><circle cx="348" cy="1024" r="13"/><line x1="343" y1="1019" x2="353" y2="1029"/><line x1="353" y1="1019" x2="343" y2="1029"/></g>
                 </g>
               </svg>
             </div>
@@ -500,9 +522,11 @@
       </div>
 
       <div class="slot-group">
-        <h3>종아리</h3>
+        <h3>종아리 · 정강이</h3>
         <div class="slot-row" data-row="calfLeft"></div>
         <div class="slot-row" data-row="calfRight"></div>
+        <div class="slot-row" data-row="shinLeft"></div>
+        <div class="slot-row" data-row="shinRight"></div>
       </div>
 
       <div class="slot-group" id="customZoneGroup" hidden>
@@ -687,6 +711,8 @@
     {id:"backWaist",   label:"허리",        group:"back"},
     {id:"calfLeft",    label:"왼쪽 종아리 (세로형)", group:"back"},
     {id:"calfRight",   label:"오른쪽 종아리 (세로형)", group:"back"},
+    {id:"shinLeft",    label:"왼쪽 정강이", group:"front"},
+    {id:"shinRight",   label:"오른쪽 정강이", group:"front"},
     {id:"shortsLogo",  label:"하의 로고",   group:"front"}
   ];
   var LABELS = {};
@@ -697,7 +723,7 @@
     contact: "문의 wndnjs1100@gmail.com",
     zones: {}
   };
-  ZONES.forEach(function(z){ defaultState.zones[z.id] = {image:null, price:"", bidder:""}; });
+  ZONES.forEach(function(z){ defaultState.zones[z.id] = {image:null, price:"", bidder:"", bidderEmail:""}; });
 
   var state = JSON.parse(JSON.stringify(defaultState));
 
@@ -749,6 +775,7 @@
           bidder: row.bidder || "",
           price: row.price || "",
           image: row.imageUrl || "",
+          bidderEmail: row.bidderEmail || "",
           custom: isTruthyFlag(row.isCustom),
           view: row.view || "",
           x: row.x || "", y: row.y || "", w: row.w || "", h: row.h || ""
@@ -770,6 +797,7 @@
         state.zones[z.id].bidder = (remote && remote.bidder) || "";
         state.zones[z.id].price = (remote && remote.price) || "";
         state.zones[z.id].image = (remote && remote.image) || null;
+        state.zones[z.id].bidderEmail = (remote && remote.bidderEmail) || "";
       });
       return zones;
     }catch(err){
@@ -822,6 +850,10 @@
     if(deleteZoneBtn){
       deleteZoneBtn.disabled = false;
       deleteZoneBtn.textContent = isConfirmed ? "위치 삭제(코드)" : "위치 삭제";
+    }
+    var secondaryRow = document.querySelector('[data-secondary="'+id+'"]');
+    if(secondaryRow){
+      secondaryRow.hidden = (!removeBtn || removeBtn.hidden) && !deleteZoneBtn;
     }
     var priceEl = document.querySelector('[data-price="'+id+'"] .slot-price-text');
     if(priceEl){
@@ -890,7 +922,7 @@
     document.getElementById("contact").value = state.contact;
   }
 
-  async function setZoneBid(id, price, url, bidder){
+  async function setZoneBid(id, price, url, bidder, email){
     var label = LABELS[id] || id;
     var confirmBtn = document.querySelector('[data-confirm="'+id+'"]');
     if(isBackendConfigured()){
@@ -901,6 +933,8 @@
           bidder: bidder || "",
           price: price,
           imageUrl: url,
+          bidderEmail: email || "",
+          notified: "",
           updatedAt: new Date().toISOString()
         });
       }catch(err){
@@ -913,6 +947,7 @@
     state.zones[id].price = price;
     state.zones[id].image = url;
     state.zones[id].bidder = bidder || "";
+    state.zones[id].bidderEmail = email || "";
     draftImages[id] = null;
     renderZone(id);
     renderProgress();
@@ -1015,6 +1050,7 @@
 
   var currentUploadZone = null;
   var draftImages = {};
+  var isRefreshing = false;
   var fileInput = document.getElementById("fileInput");
   var flipEl = document.getElementById("flip");
   var viewToggle = document.getElementById("viewToggle");
@@ -1038,7 +1074,7 @@
   function registerZoneMeta(id, label, group){
     ZONES.push({id:id, label:label, group:group});
     LABELS[id] = label;
-    if(!state.zones[id]) state.zones[id] = {image:null, price:"", bidder:""};
+    if(!state.zones[id]) state.zones[id] = {image:null, price:"", bidder:"", bidderEmail:""};
   }
 
   function buildZoneSvgGroup(id, rect){
@@ -1358,6 +1394,10 @@
   }
 
   function triggerUpload(id){
+    if(isRefreshing){
+      showToast("최신 현황을 불러오는 중이에요. 잠시 후 다시 시도해주세요.", "error");
+      return;
+    }
     if(isBiddingClosed()){
       showToast("입찰이 마감됐어요. 9월 30일 이후로는 새 로고를 받을 수 없어요.", "error");
       return;
@@ -1384,12 +1424,16 @@
     });
   });
 
-  function offerEmailNotify(id, label, bidderName, bid){
+  function isValidEmail(v){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  function offerEmailNotify(id, label, bidderName, bid, email){
     showModal({
       title: "입찰 확정 안내",
       desc: bidderName + "님, 입찰 감사해요!\n\n" +
         "이 자리는 아직 최종 확정이 아니에요. 입찰 마감일(9월 30일)까지 다른 업체가 더 높은 금액을 제시하면 순위가 바뀔 수 있으니, 마감 전까지 현황을 틈틈이 확인해주세요.\n\n" +
-        "최종 낙찰자가 결정되면 이메일로 확정 안내를 드릴게요.",
+        "입찰 마감일이 지나 최종 결과가 확정되면 " + (email ? ("입력하신 " + email + "로") : "이메일로") + " 연락드릴게요.",
       fields: [],
       confirmLabel: "추가문의하기",
       cancelLabel: "확인",
@@ -1417,17 +1461,20 @@
     var label = LABELS[id] || id;
     showModal({
       title: label + " 확정",
-      desc: current > 0
+      desc: (current > 0
         ? ("현재 입찰가는 " + current.toLocaleString("ko-KR") + "원이에요.\n더 높은 금액을 입력하고 확정하세요.")
-        : ("최소 입찰가는 " + MIN_BID.toLocaleString("ko-KR") + "원이에요.\n업체명과 입찰 금액을 입력하세요."),
+        : ("최소 입찰가는 " + MIN_BID.toLocaleString("ko-KR") + "원이에요.\n업체명과 입찰 금액을 입력하세요.")) +
+        "\n입찰 마감일(9월 30일) 이후 결과가 정해지면 이메일로 연락드려요.",
       fields: [
         {key:"bidder", label:"업체명", placeholder:"업체명을 입력하세요", value: state.zones[id].bidder || ""},
-        {key:"amount", label:"입찰 금액 (원)", placeholder:String(minRequired), value: String(minRequired), numeric:true}
+        {key:"amount", label:"입찰 금액 (원)", placeholder:String(minRequired), value: String(minRequired), numeric:true},
+        {key:"email", label:"연락받을 이메일", placeholder:"you@company.com", value: state.zones[id].bidderEmail || ""}
       ],
       confirmLabel: "확정",
       onConfirm: async function(values){
         var bidderName = (values.bidder || "").trim();
         var bid = parseInt(String(values.amount).replace(/[^0-9]/g, ""), 10);
+        var email = (values.email || "").trim();
         if(!bidderName){
           showToast("업체명을 입력해주세요.", "error");
           return;
@@ -1436,10 +1483,14 @@
           showToast("최소 " + minRequired.toLocaleString("ko-KR") + "원 이상 입력해야 해요.", "error");
           return;
         }
-        var saved = await setZoneBid(id, bid, draft, bidderName);
+        if(!email || !isValidEmail(email)){
+          showToast("연락받을 이메일을 올바르게 입력해주세요.", "error");
+          return;
+        }
+        var saved = await setZoneBid(id, bid, draft, bidderName, email);
         if(!saved) return; // setZoneBid already showed the error toast
         showToast(label + " 확정! " + bidderName + " · " + bid.toLocaleString("ko-KR") + "원", "success");
-        offerEmailNotify(id, label, bidderName, bid);
+        offerEmailNotify(id, label, bidderName, bid, email);
       }
     });
   }
@@ -1470,13 +1521,18 @@
       return;
     }
     btn.disabled = true;
+    isRefreshing = true;
     var original = btn.textContent;
     btn.textContent = "새로고침 중...";
-    await loadZonesFromServer();
-    renderAll();
-    btn.disabled = false;
-    btn.textContent = original;
-    showToast("최신 입찰 현황을 불러왔어요.", "success");
+    try{
+      await loadZonesFromServer();
+      renderAll();
+      showToast("최신 입찰 현황을 불러왔어요.", "success");
+    } finally {
+      isRefreshing = false;
+      btn.disabled = false;
+      btn.textContent = original;
+    }
   });
 
   ZONES.forEach(function(z){ LABELS[z.id] = z.label; });
@@ -1492,10 +1548,14 @@
         '<div class="slot-price" data-price="'+id+'"><span class="dot"></span><span class="slot-price-text"></span></div>' +
       '</div>' +
       '<div class="slot-actions">' +
-        '<button class="btn-ghost" data-upload="'+id+'" type="button">업로드</button>' +
-        '<button class="btn-solid" data-confirm="'+id+'" hidden type="button">확정</button>' +
-        '<button class="btn-text" data-remove-btn="'+id+'" hidden type="button">삭제</button>' +
-        (isCustom ? '<button class="btn-text" data-delete-zone="'+id+'" type="button">위치 삭제</button>' : '') +
+        '<div class="slot-actions-row">' +
+          '<button class="btn-solid" data-confirm="'+id+'" hidden type="button">확정</button>' +
+          '<button class="btn-ghost" data-upload="'+id+'" type="button">업로드</button>' +
+        '</div>' +
+        '<div class="slot-actions-row slot-actions-secondary" data-secondary="'+id+'">' +
+          '<button class="btn-text" data-remove-btn="'+id+'" hidden type="button">삭제</button>' +
+          (isCustom ? '<button class="btn-text" data-delete-zone="'+id+'" type="button">위치 삭제</button>' : '') +
+        '</div>' +
       '</div>';
     return row;
   }
