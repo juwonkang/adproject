@@ -131,6 +131,7 @@
   .zone-overlay{position:absolute;inset:0;width:100%;height:100%;display:block;}
 
   .zone{cursor:pointer;}
+  .zone-sleeve{fill:#141414;stroke:rgba(255,255,255,0.1);stroke-width:1;pointer-events:none;}
   .zone .zone-rect{
     fill:var(--gold-soft); stroke:var(--gold); stroke-width:2.6;
     transition:stroke-width .15s, fill-opacity .15s;
@@ -345,7 +346,7 @@
     <p class="hero-eyebrow">업체 광고 제안</p>
     <h1 class="hero-title">대회 하루, 제 몸 전체가 여러분의 광고판이 됩니다</h1>
     <p class="hero-desc">
-      10월 10일 배드민턴 대회에 출전하는 선수의 유니폼·신체 부위별 광고 자리를, 원하는 업체가 직접 입찰로 확보하는 페이지예요.
+      10월 10일 열리는 2026 빅터코리아 x 배프 머니컵에 출전하는 선수의 유니폼·신체 부위별 광고 자리를, 원하는 업체가 직접 입찰로 확보하는 페이지예요.
       최근 하이록스 같은 스포츠 대회에서 선수 개인 스폰서십이 새로운 광고 채널로 주목받고 있어요 — 확정 전까지는 부담 없이 미리보기만 해보셔도 좋아요.
     </p>
     <div class="hero-steps">
@@ -358,8 +359,8 @@
 
   <header>
     <div class="title-block">
-      <input class="field" id="athleteName" value="강주원" maxlength="20">
-      <input class="field-sub" id="eventLabel" value="9월 배드민턴 대회 출전 · 유니폼에 로고를 실어드립니다" maxlength="60">
+      <input class="field" id="athleteName" value="2026 빅터코리아 x 배프 머니컵" maxlength="40">
+      <input class="field-sub" id="eventLabel" value="10월 10일 가산체육문화센터 · 유니폼에 로고를 실어드립니다" maxlength="60">
     </div>
     <div class="badges">
       <div class="badge" id="eventBadge"><span class="dot"></span></div>
@@ -377,7 +378,6 @@
               <img class="photo-base" alt="정면" src="front.png">
               <svg class="zone-overlay" viewBox="0 0 440 1371" preserveAspectRatio="xMidYMid meet">
                 <clipPath id="clip-chestLeft"><rect x="125" y="255" width="85" height="65" rx="14"/></clipPath>
-                <clipPath id="clip-chestRight"><rect x="230" y="255" width="85" height="65" rx="14"/></clipPath>
                 <clipPath id="clip-stomach"><rect x="140" y="370" width="160" height="90" rx="16"/></clipPath>
                 <clipPath id="clip-shortsLogo"><rect x="255" y="735" width="60" height="50" rx="10"/></clipPath>
 
@@ -387,14 +387,6 @@
                   <g class="zone-badge"><circle cx="167.5" cy="287.5" r="16"/><line x1="159.5" y1="287.5" x2="175.5" y2="287.5"/><line x1="167.5" y1="279.5" x2="167.5" y2="295.5"/></g>
                   <rect class="zone-hit" x="125" y="255" width="85" height="65" rx="14"/>
                   <g class="zone-remove" data-zone-remove="chestLeft"><circle cx="199" cy="266" r="13"/><line x1="194" y1="261" x2="204" y2="271"/><line x1="204" y1="261" x2="194" y2="271"/></g>
-                </g>
-
-                <g class="zone" data-zone="chestRight">
-                  <image data-zone-image="chestRight" clip-path="url(#clip-chestRight)" x="230" y="255" width="85" height="65" preserveAspectRatio="xMidYMid slice"/>
-                  <rect class="zone-rect" x="230" y="255" width="85" height="65" rx="14"/>
-                  <g class="zone-badge"><circle cx="272.5" cy="287.5" r="16"/><line x1="264.5" y1="287.5" x2="280.5" y2="287.5"/><line x1="272.5" y1="279.5" x2="272.5" y2="295.5"/></g>
-                  <rect class="zone-hit" x="230" y="255" width="85" height="65" rx="14"/>
-                  <g class="zone-remove" data-zone-remove="chestRight"><circle cx="304" cy="266" r="13"/><line x1="299" y1="261" x2="309" y2="271"/><line x1="309" y1="261" x2="299" y2="271"/></g>
                 </g>
 
                 <g class="zone" data-zone="stomach">
@@ -422,8 +414,9 @@
               <svg class="zone-overlay" viewBox="0 0 436 1368" preserveAspectRatio="xMidYMid meet">
                 <clipPath id="clip-backUpper"><rect x="110" y="250" width="210" height="80" rx="16"/></clipPath>
                 <clipPath id="clip-backLower"><rect x="110" y="350" width="210" height="90" rx="16"/></clipPath>
-                <clipPath id="clip-calfLeft-back"><rect x="90" y="1000" width="85" height="110" rx="16"/></clipPath>
-                <clipPath id="clip-calfRight-back"><rect x="255" y="1000" width="85" height="110" rx="16"/></clipPath>
+                <clipPath id="clip-backWaist"><rect x="110" y="460" width="210" height="140" rx="16"/></clipPath>
+                <clipPath id="clip-calfLeft-back"><rect x="116.5" y="1010" width="32" height="90" rx="8"/></clipPath>
+                <clipPath id="clip-calfRight-back"><rect x="281.5" y="1010" width="32" height="90" rx="8"/></clipPath>
 
                 <g class="zone" data-zone="backUpper">
                   <image data-zone-image="backUpper" clip-path="url(#clip-backUpper)" x="110" y="250" width="210" height="80" preserveAspectRatio="xMidYMid slice"/>
@@ -441,18 +434,28 @@
                   <g class="zone-remove" data-zone-remove="backLower"><circle cx="307" cy="363" r="13"/><line x1="302" y1="358" x2="312" y2="368"/><line x1="312" y1="358" x2="302" y2="368"/></g>
                 </g>
 
+                <g class="zone" data-zone="backWaist">
+                  <image data-zone-image="backWaist" clip-path="url(#clip-backWaist)" x="110" y="460" width="210" height="140" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="110" y="460" width="210" height="140" rx="16"/>
+                  <g class="zone-badge"><circle cx="215" cy="530" r="18"/><line x1="205" y1="530" x2="225" y2="530"/><line x1="215" y1="520" x2="215" y2="540"/></g>
+                  <rect class="zone-hit" x="110" y="460" width="210" height="140" rx="16"/>
+                  <g class="zone-remove" data-zone-remove="backWaist"><circle cx="307" cy="473" r="13"/><line x1="302" y1="468" x2="312" y2="478"/><line x1="312" y1="468" x2="302" y2="478"/></g>
+                </g>
+
                 <g class="zone" data-zone="calfLeft">
-                  <image data-zone-image="calfLeft" clip-path="url(#clip-calfLeft-back)" x="90" y="1000" width="85" height="110" preserveAspectRatio="xMidYMid slice"/>
-                  <rect class="zone-rect" x="90" y="1000" width="85" height="110" rx="16"/>
-                  <g class="zone-badge"><circle cx="132.5" cy="1055" r="16"/><line x1="124.5" y1="1055" x2="140.5" y2="1055"/><line x1="132.5" y1="1047" x2="132.5" y2="1063"/></g>
+                  <rect class="zone-sleeve" x="90" y="1000" width="85" height="110" rx="16"/>
+                  <image data-zone-image="calfLeft" clip-path="url(#clip-calfLeft-back)" x="116.5" y="1010" width="32" height="90" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="116.5" y="1010" width="32" height="90" rx="8"/>
+                  <g class="zone-badge"><circle cx="132.5" cy="1055" r="13"/><line x1="126.5" y1="1055" x2="138.5" y2="1055"/><line x1="132.5" y1="1049" x2="132.5" y2="1061"/></g>
                   <rect class="zone-hit" x="90" y="1000" width="85" height="110" rx="16"/>
                   <g class="zone-remove" data-zone-remove="calfLeft"><circle cx="164" cy="1012" r="13"/><line x1="159" y1="1007" x2="169" y2="1017"/><line x1="169" y1="1007" x2="159" y2="1017"/></g>
                 </g>
 
                 <g class="zone" data-zone="calfRight">
-                  <image data-zone-image="calfRight" clip-path="url(#clip-calfRight-back)" x="255" y="1000" width="85" height="110" preserveAspectRatio="xMidYMid slice"/>
-                  <rect class="zone-rect" x="255" y="1000" width="85" height="110" rx="16"/>
-                  <g class="zone-badge"><circle cx="297.5" cy="1055" r="16"/><line x1="289.5" y1="1055" x2="305.5" y2="1055"/><line x1="297.5" y1="1047" x2="297.5" y2="1063"/></g>
+                  <rect class="zone-sleeve" x="255" y="1000" width="85" height="110" rx="16"/>
+                  <image data-zone-image="calfRight" clip-path="url(#clip-calfRight-back)" x="281.5" y="1010" width="32" height="90" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="281.5" y="1010" width="32" height="90" rx="8"/>
+                  <g class="zone-badge"><circle cx="297.5" cy="1055" r="13"/><line x1="291.5" y1="1055" x2="303.5" y2="1055"/><line x1="297.5" y1="1049" x2="297.5" y2="1061"/></g>
                   <rect class="zone-hit" x="255" y="1000" width="85" height="110" rx="16"/>
                   <g class="zone-remove" data-zone-remove="calfRight"><circle cx="329" cy="1012" r="13"/><line x1="324" y1="1007" x2="334" y2="1017"/><line x1="334" y1="1007" x2="324" y2="1017"/></g>
                 </g>
@@ -486,7 +489,6 @@
       <div class="slot-group">
         <h3>상의 · 앞면</h3>
         <div class="slot-row" data-row="chestLeft"></div>
-        <div class="slot-row" data-row="chestRight"></div>
         <div class="slot-row" data-row="stomach"></div>
       </div>
 
@@ -494,6 +496,7 @@
         <h3>상의 · 뒷면</h3>
         <div class="slot-row" data-row="backUpper"></div>
         <div class="slot-row" data-row="backLower"></div>
+        <div class="slot-row" data-row="backWaist"></div>
       </div>
 
       <div class="slot-group">
@@ -674,10 +677,10 @@
 
   var ZONES = [
     {id:"chestLeft",   label:"왼쪽 가슴",   group:"front"},
-    {id:"chestRight",  label:"오른쪽 가슴", group:"front"},
     {id:"stomach",     label:"배",          group:"front"},
     {id:"backUpper",   label:"등 위쪽",     group:"back"},
     {id:"backLower",   label:"등 아래쪽",   group:"back"},
+    {id:"backWaist",   label:"허리",        group:"back"},
     {id:"calfLeft",    label:"왼쪽 종아리 (세로형)", group:"back"},
     {id:"calfRight",   label:"오른쪽 종아리 (세로형)", group:"back"},
     {id:"shortsLogo",  label:"하의 로고",   group:"front"}
@@ -685,8 +688,8 @@
   var LABELS = {};
 
   var defaultState = {
-    athleteName: "강주원",
-    eventLabel: "9월 배드민턴 대회 출전 · 유니폼에 로고를 실어드립니다",
+    athleteName: "2026 빅터코리아 x 배프 머니컵",
+    eventLabel: "10월 10일 가산체육문화센터 · 유니폼에 로고를 실어드립니다",
     contact: "문의 wndnjs1100@gmail.com",
     zones: {}
   };
