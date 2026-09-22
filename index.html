@@ -590,55 +590,56 @@
   var BID_DEADLINE = new Date(2026, 8, 30); // 9월 30일 입찰 마감 (유니폼 프린팅 시간 확보)
   var CONTACT_EMAIL = "wndnjs1100@gmail.com";
 
-  // Google Apps Script 웹앱 URL을 배포 후 여기에 붙여넣으면, 그 순간부터
+  // SheetDB에서 API를 만들면 받는 주소를 여기 붙여넣으면, 그 순간부터
   // 이 페이지에 접속하는 누구나 같은 입찰 현황을 보고 경쟁하게 됩니다.
   // 아직 안 넣었다면 지금처럼 이 브라우저에서만 보이는 로컬 저장으로 동작합니다.
-  var API_URL = "https://script.google.com/macros/s/AKfycbxb73JCfHP_aonKDz97jiAQd7loJDdwj3EBz2Ejs_TYn1Zq509kxXX9nKwr3uhYvg5l/exec";
+  var API_URL = "https://sheetdb.io/api/v1/sd965weik5dxf";
+  var SHEET_TAB = "bids"; // 구글시트에서 데이터가 들어있는 탭(시트) 이름
 
   function isBackendConfigured(){
     return !!API_URL && API_URL.indexOf("REPLACE_WITH") !== 0;
   }
 
-  // Google Apps Script 웹앱은 브라우저에서 fetch()로 바로 접근하면 CORS(교차 출처) 문제로
-  // 막히는 경우가 흔해서, 읽기는 <script> 태그로 불러오는 JSONP 방식을 씁니다.
-  // (JSONP는 CORS 제약을 받지 않아서 안정적으로 동작해요.)
-  function jsonp(url, params){
-    return new Promise(function(resolve, reject){
-      var cbName = "sponsorCb_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
-      var script = document.createElement("script");
-      var timer = setTimeout(function(){ cleanup(); reject(new Error("timeout")); }, 12000);
-      function cleanup(){
-        clearTimeout(timer);
-        delete window[cbName];
-        if(script.parentNode) script.parentNode.removeChild(script);
-      }
-      window[cbName] = function(data){ cleanup(); resolve(data); };
-      script.onerror = function(){ cleanup(); reject(new Error("load error")); };
-      var qs = "callback=" + encodeURIComponent(cbName);
-      if(params){
-        Object.keys(params).forEach(function(k){
-          if(params[k] === undefined || params[k] === null) return;
-          qs += "&" + encodeURIComponent(k) + "=" + encodeURIComponent(params[k]);
-        });
-      }
-      script.src = url + (url.indexOf("?") === -1 ? "?" : "&") + qs;
-      document.head.appendChild(script);
-    });
+  function apiUrl(suffix){
+    var base = API_URL + (suffix || "");
+    var sep = base.indexOf("?") === -1 ? "?" : "&";
+    return base + sep + "sheet=" + encodeURIComponent(SHEET_TAB);
   }
 
-  function sleep(ms){ return new Promise(function(resolve){ setTimeout(resolve, ms); }); }
+  // SheetDB는 CORS를 기본 지원해서 fetch()로 바로 호출할 수 있어요.
+  async function sheetGetAll(){
+    var res = await fetch(apiUrl(""));
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    return res.json();
+  }
 
-  // 이미지가 포함된 "확정" 요청은 용량이 커서 JSONP(주소창 길이 제한)로 못 보내니
-  // no-cors POST로 그냥 보내고, 저장됐는지는 잠시 후 다시 읽어와서 직접 확인합니다.
-  async function pollZoneUntil(id, predicate, attempts, delayMs){
-    for(var i = 0; i < attempts; i++){
-      await sleep(delayMs);
-      try{
-        var data = await jsonp(API_URL);
-        if(data && data.zones && predicate(data.zones[id], data.zones)) return data.zones;
-      }catch(err){ /* 다음 시도에서 재확인 */ }
+  // 해당 zoneId 행이 있으면 값만 갱신(PATCH), 없으면 새로 만듭니다(POST).
+  async function sheetUpsert(zoneId, fields){
+    var patchRes = await fetch(apiUrl("/zoneId/" + encodeURIComponent(zoneId)), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: fields })
+    });
+    if(!patchRes.ok) throw new Error("HTTP " + patchRes.status);
+    var patchData = await patchRes.json();
+    if(!patchData || !patchData.updated){
+      var row = Object.assign({ zoneId: zoneId }, fields);
+      var postRes = await fetch(apiUrl(""), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: [row] })
+      });
+      if(!postRes.ok) throw new Error("HTTP " + postRes.status);
+      var postData = await postRes.json();
+      if(!postData || !postData.created) throw new Error("save failed");
     }
-    return null;
+  }
+
+  async function sheetDeleteRow(zoneId){
+    var res = await fetch(apiUrl("/zoneId/" + encodeURIComponent(zoneId)), { method: "DELETE" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    var data = await res.json();
+    if(!data || typeof data.deleted !== "number") throw new Error("delete failed");
   }
 
   var ZONES = [
@@ -689,31 +690,48 @@
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ /* quota or privacy mode — ignore */ }
   }
 
+  function isTruthyFlag(v){
+    return v === true || v === "true" || v === "TRUE" || v === 1 || v === "1";
+  }
+
   async function loadZonesFromServer(){
-    if(!isBackendConfigured()) return;
+    if(!isBackendConfigured()) return null;
     try{
-      var data = await jsonp(API_URL);
-      if(data && data.zones){
-        var knownIds = ZONES.map(function(z){ return z.id; });
-        Object.keys(data.zones).forEach(function(zoneId){
-          var remote = data.zones[zoneId];
-          if(knownIds.indexOf(zoneId) === -1 && remote && remote.custom){
-            // 다른 방문자가 새로 추가한 커스텀 구역 — 내 화면에도 만들어줌
-            createCustomZone(zoneId, remote.label || zoneId, remote.view || "front", {
-              x: parseFloat(remote.x) || 0, y: parseFloat(remote.y) || 0,
-              w: parseFloat(remote.w) || 60, h: parseFloat(remote.h) || 60
-            });
-          }
-        });
-        ZONES.forEach(function(z){
-          var remote = data.zones[z.id];
-          state.zones[z.id].bidder = (remote && remote.bidder) || "";
-          state.zones[z.id].price = (remote && remote.price) || "";
-          state.zones[z.id].image = (remote && remote.image) || null;
-        });
-      }
+      var rows = await sheetGetAll();
+      var zones = {};
+      (rows || []).forEach(function(row){
+        if(!row || !row.zoneId) return;
+        zones[row.zoneId] = {
+          label: row.label || "",
+          bidder: row.bidder || "",
+          price: row.price || "",
+          image: row.imageUrl || "",
+          custom: isTruthyFlag(row.isCustom),
+          view: row.view || "",
+          x: row.x || "", y: row.y || "", w: row.w || "", h: row.h || ""
+        };
+      });
+      var knownIds = ZONES.map(function(z){ return z.id; });
+      Object.keys(zones).forEach(function(zoneId){
+        var remote = zones[zoneId];
+        if(knownIds.indexOf(zoneId) === -1 && remote.custom){
+          // 다른 방문자가 새로 추가한 커스텀 구역 — 내 화면에도 만들어줌
+          createCustomZone(zoneId, remote.label || zoneId, remote.view || "front", {
+            x: parseFloat(remote.x) || 0, y: parseFloat(remote.y) || 0,
+            w: parseFloat(remote.w) || 60, h: parseFloat(remote.h) || 60
+          });
+        }
+      });
+      ZONES.forEach(function(z){
+        var remote = zones[z.id];
+        state.zones[z.id].bidder = (remote && remote.bidder) || "";
+        state.zones[z.id].price = (remote && remote.price) || "";
+        state.zones[z.id].image = (remote && remote.image) || null;
+      });
+      return zones;
     }catch(err){
       showToast("서버에서 최신 입찰 현황을 불러오지 못했어요.", "error");
+      return null;
     }
   }
 
@@ -823,24 +841,15 @@
     if(isBackendConfigured()){
       if(confirmBtn){ confirmBtn.disabled = true; confirmBtn.textContent = "저장 중..."; }
       try{
-        // 로고 이미지가 포함된 요청이라 용량이 커서 JSONP로는 못 보내요.
-        // no-cors로 전송만 하고(응답은 읽을 수 없음), 실제로 저장됐는지는 다시 읽어와서 직접 확인합니다.
-        await fetch(API_URL, {
-          method: "POST",
-          mode: "no-cors",
-          body: JSON.stringify({ zoneId:id, label:label, bidder:bidder, price:price, imageBase64:url })
+        await sheetUpsert(id, {
+          label: label,
+          bidder: bidder || "",
+          price: price,
+          imageUrl: url,
+          updatedAt: new Date().toISOString()
         });
-        var confirmedZones = await pollZoneUntil(id, function(z){
-          return !!z && String(z.price) === String(price) && (z.bidder || "") === (bidder || "");
-        }, 6, 1200);
-        if(!confirmedZones){
-          showServerError("서버 저장에 실패했어요.", null);
-          if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = "확정"; }
-          return false;
-        }
-        if(confirmedZones[id].image) url = confirmedZones[id].image; // 서버(드라이브)에 저장된 실제 링크로 교체
       }catch(err){
-        showServerError("서버 저장에 실패했어요.", null);
+        showServerError("서버 저장에 실패했어요.", err);
         if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = "확정"; }
         return false;
       }
@@ -862,13 +871,11 @@
       renderZone(id);
       return;
     }
-    var label = LABELS[id] || id;
     if(isBackendConfigured()){
       try{
-        var data = await jsonp(API_URL, { action:"clear", zoneId:id, label:label });
-        if(!data || !data.success) throw new Error("clear failed");
+        await sheetUpsert(id, { bidder:"", price:"", imageUrl:"", updatedAt:"" });
       }catch(err){
-        showServerError("삭제에 실패했어요.", data);
+        showServerError("삭제에 실패했어요.", err);
         return;
       }
     }
@@ -1027,10 +1034,12 @@
         var id = "custom_" + Date.now();
         if(isBackendConfigured()){
           try{
-            var data = await jsonp(API_URL, { action:"addZone", zoneId:id, label:label, view:view, x:rect.x, y:rect.y, w:rect.w, h:rect.h });
-            if(!data || !data.success) throw new Error("addZone failed");
+            await sheetUpsert(id, {
+              label: label, isCustom: "true", view: view,
+              x: rect.x, y: rect.y, w: rect.w, h: rect.h
+            });
           }catch(err){
-            showServerError("위치 추가에 실패했어요.", data);
+            showServerError("위치 추가에 실패했어요.", err);
             return;
           }
         }
@@ -1048,10 +1057,9 @@
     }
     if(isBackendConfigured()){
       try{
-        var data = await jsonp(API_URL, { action:"deleteZone", zoneId:id });
-        if(!data || !data.success) throw new Error("delete failed");
+        await sheetDeleteRow(id);
       }catch(err){
-        showServerError("삭제에 실패했어요.", data);
+        showServerError("삭제에 실패했어요.", err);
         return;
       }
     }
@@ -1158,8 +1166,9 @@
     });
   })();
 
-  function showServerError(prefix, data){
-    var detail = (data && data.error) ? (" (" + data.error + ")") : "";
+  function showServerError(prefix, err){
+    var msg = err && err.message ? err.message : (typeof err === "string" ? err : "");
+    var detail = msg ? (" (" + msg + ")") : "";
     showToast(prefix + detail, "error");
   }
 
