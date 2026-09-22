@@ -941,24 +941,38 @@
   }
 
   function optimizeImage(file, callback){
+    // 구글시트 셀 하나에 들어갈 수 있는 글자 수(약 5만자)를 넘지 않도록,
+    // 사진처럼 복잡하고 용량이 큰 이미지는 더 작게·더 낮은 화질로 자동으로 다시 시도해요.
+    // (로고처럼 단순한 이미지는 대부분 첫 시도에서 바로 통과돼요)
+    var MAX_DATA_URL_LEN = 45000;
+    var ATTEMPTS = [
+      {dim:480, q:0.85}, {dim:480, q:0.7}, {dim:400, q:0.6},
+      {dim:320, q:0.6}, {dim:260, q:0.5}, {dim:200, q:0.5}, {dim:160, q:0.4}
+    ];
     var reader = new FileReader();
     reader.onload = function(e){
       var original = e.target.result;
       var img = new Image();
       img.onload = function(){
         try{
-          var maxDim = 480;
           var w = img.naturalWidth || img.width;
           var h = img.naturalHeight || img.height;
-          var scale = Math.min(1, maxDim / Math.max(w, h));
-          var cw = Math.max(1, Math.round(w * scale));
-          var ch = Math.max(1, Math.round(h * scale));
-          var canvas = document.createElement("canvas");
-          canvas.width = cw;
-          canvas.height = ch;
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, cw, ch);
-          callback(canvas.toDataURL("image/jpeg", 0.85));
+          var best = original;
+          for(var i = 0; i < ATTEMPTS.length; i++){
+            var a = ATTEMPTS[i];
+            var scale = Math.min(1, a.dim / Math.max(w, h));
+            var cw = Math.max(1, Math.round(w * scale));
+            var ch = Math.max(1, Math.round(h * scale));
+            var canvas = document.createElement("canvas");
+            canvas.width = cw;
+            canvas.height = ch;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, cw, ch);
+            var dataUrl = canvas.toDataURL("image/jpeg", a.q);
+            best = dataUrl;
+            if(dataUrl.length <= MAX_DATA_URL_LEN) break;
+          }
+          callback(best);
         }catch(err){
           callback(original);
         }
@@ -1222,6 +1236,9 @@
   function showServerError(prefix, err){
     var msg = err && err.message ? err.message : (typeof err === "string" ? err : "");
     var detail = msg ? (" (" + msg + ")") : "";
+    if(/HTTP 400/.test(msg)){
+      detail += " · 이미지가 너무 복잡하거나 커서 그럴 수 있어요. 다른 사진으로 다시 시도해보세요.";
+    }
     showToast(prefix + detail, "error");
   }
 
