@@ -620,8 +620,15 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ data: fields })
     });
-    if(!patchRes.ok) throw new Error("HTTP " + patchRes.status);
-    var patchData = await patchRes.json();
+    var patchData = null;
+    if(patchRes.ok){
+      patchData = await patchRes.json();
+    } else if(patchRes.status !== 404){
+      // 404 means SheetDB found no existing row for this zoneId yet (first bid on this
+      // zone) - that's expected, so we fall through and create it below. Any other
+      // error status is a real failure.
+      throw new Error("HTTP " + patchRes.status);
+    }
     if(!patchData || !patchData.updated){
       var row = Object.assign({ zoneId: zoneId }, fields);
       var postRes = await fetch(apiUrl(""), {
