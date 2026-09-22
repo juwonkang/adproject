@@ -139,10 +139,8 @@
   .zone .zone-badge circle{fill:var(--gold);}
   .zone .zone-badge line{stroke:#241A10;stroke-width:3.2;stroke-linecap:round;}
   .zone .zone-hit{fill:transparent;}
-  .zone.filled .zone-rect{display:none;}
-  .zone.filled .zone-badge{display:none;}
-  .zone.draft .zone-rect{fill:none;stroke:var(--gold);stroke-dasharray:5 4;}
-  .zone.draft .zone-badge{display:none;}
+  .zone.filled .zone-rect, .zone.draft .zone-rect{display:none;}
+  .zone.filled .zone-badge, .zone.draft .zone-badge{display:none;}
   .zone-remove{display:none;cursor:pointer;}
   .zone.filled .zone-remove{display:block;}
   .zone.draft .zone-remove{display:block;}
@@ -595,7 +593,7 @@
   // Google Apps Script 웹앱 URL을 배포 후 여기에 붙여넣으면, 그 순간부터
   // 이 페이지에 접속하는 누구나 같은 입찰 현황을 보고 경쟁하게 됩니다.
   // 아직 안 넣었다면 지금처럼 이 브라우저에서만 보이는 로컬 저장으로 동작합니다.
-  var API_URL = "REPLACE_WITH_YOUR_APPS_SCRIPT_WEB_APP_URL";
+  var API_URL = "https://script.google.com/macros/s/AKfycbxb73JCfHP_aonKDz97jiAQd7loJDdwj3EBz2Ejs_TYn1Zq509kxXX9nKwr3uhYvg5l/exec";
 
   function isBackendConfigured(){
     return !!API_URL && API_URL.indexOf("REPLACE_WITH") !== 0;
