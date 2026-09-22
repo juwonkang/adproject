@@ -1294,15 +1294,17 @@
 
   function offerEmailNotify(id, label, bidderName, bid){
     showModal({
-      title: "담당자에게 알리기",
-      desc: bidderName + "님, 입찰 감사해요!\n이 페이지는 담당자 화면에 자동으로 뜨지 않아서, 아래 버튼으로 이메일 한 통만 보내주시면 확정 처리가 훨씬 빨라져요.\n(로고 이미지 파일은 이메일에 직접 첨부해주세요)",
+      title: "입찰 확정 안내",
+      desc: bidderName + "님, 입찰 감사해요!\n\n" +
+        "이 자리는 아직 최종 확정이 아니에요. 입찰 마감일(9월 30일)까지 다른 병원·한의원이 더 높은 금액을 제시하면 순위가 바뀔 수 있으니, 마감 전까지 현황을 틈틈이 확인해주세요.\n\n" +
+        "최종 낙찰자가 결정되면 이메일로 확정 안내를 드릴게요.",
       fields: [],
-      confirmLabel: "이메일 보내기",
-      cancelLabel: "나중에",
+      confirmLabel: "추가문의하기",
+      cancelLabel: "확인",
       onConfirm: function(){
-        var subject = "[스폰서 입찰] " + label + " - " + bidderName;
+        var subject = "[스폰서 입찰 문의] " + label + " - " + bidderName;
         var body = "구역: " + label + "\n기관명: " + bidderName + "\n입찰 금액: " + bid.toLocaleString("ko-KR") + "원" +
-          "\n\n※ 이 페이지에서 미리 본 로고 이미지 파일을 이 메일에 첨부해서 보내주세요.";
+          "\n\n문의 내용:\n";
         window.location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
       }
     });
