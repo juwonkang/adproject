@@ -217,6 +217,18 @@
   .stage-actions{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:16px;}
   .stage-actions .btn-ghost{padding:8px 16px;}
   .stage-actions .btn-link{margin-top:0;}
+  .stage-refresh{
+    position:absolute;top:12px;right:12px;z-index:5;
+    display:inline-flex;align-items:center;gap:5px;
+    background:var(--surface);color:var(--gold-strong);
+    border:1px solid var(--gold);border-radius:999px;
+    padding:7px 12px 7px 10px;font-family:'Manrope',sans-serif;font-weight:700;font-size:11.5px;
+    white-space:nowrap;cursor:pointer;box-shadow:0 10px 22px -10px rgba(0,0,0,0.45);
+  }
+  .stage-refresh:hover{background:var(--gold-soft);}
+  .stage-refresh:disabled{opacity:.65;cursor:default;}
+  .stage-refresh-icon{font-size:14px;line-height:1;display:inline-block;}
+  @media (max-width:420px){ .stage-refresh{font-size:11px;padding:6px 10px 6px 9px;} }
   .zone-overlay.drawing{cursor:crosshair;}
   .draw-preview{fill:rgba(180,132,42,0.22);stroke:var(--gold);stroke-width:2;stroke-dasharray:5 4;pointer-events:none;}
 
@@ -322,10 +334,10 @@
 <div class="wrap">
 
   <section class="hero">
-    <p class="hero-eyebrow">병원 · 한의원 광고 제안</p>
-    <h1 class="hero-title">대회 하루, 제 몸 전체가 병원의 광고판이 됩니다</h1>
+    <p class="hero-eyebrow">업체 광고 제안</p>
+    <h1 class="hero-title">대회 하루, 제 몸 전체가 여러분의 광고판이 됩니다</h1>
     <p class="hero-desc">
-      10월 10일 배드민턴 대회에 출전하는 선수의 유니폼·신체 부위별 광고 자리를, 원하는 병원·한의원이 직접 입찰로 확보하는 페이지예요.
+      10월 10일 배드민턴 대회에 출전하는 선수의 유니폼·신체 부위별 광고 자리를, 원하는 업체가 직접 입찰로 확보하는 페이지예요.
       최근 하이록스 같은 스포츠 대회에서 선수 개인 스폰서십이 새로운 광고 채널로 주목받고 있어요 — 확정 전까지는 부담 없이 미리보기만 해보셔도 좋아요.
     </p>
     <div class="hero-steps">
@@ -440,6 +452,10 @@
             </div>
           </div>
         </div>
+
+        <button class="stage-refresh" id="refreshBtn" type="button" title="다른 업체가 새로 올린 입찰이 있는지 확인해요">
+          <span class="stage-refresh-icon" aria-hidden="true">↻</span>최신 입찰 확인
+        </button>
       </div>
 
       <div class="view-toggle" id="viewToggle">
@@ -450,7 +466,6 @@
 
       <div class="stage-actions">
         <button class="btn-ghost" id="addZoneBtn" type="button">+ 새 위치 추가</button>
-        <button class="btn-link" id="refreshBtn" type="button">다른 병원의 최신 입찰 새로고침</button>
       </div>
 
       <p class="hint" id="mainHint">👆 반짝이는 자리를 클릭해서 시작해보세요</p>
@@ -514,7 +529,7 @@
 
   <div class="faq">
     <h2>자주 묻는 질문</h2>
-    <p class="sub">병원 · 한의원 담당자분들이 자주 물어보시는 내용이에요</p>
+    <p class="sub">업체 담당자분들이 자주 물어보시는 내용이에요</p>
     <details>
       <summary>세금계산서나 현금영수증 발행이 가능한가요?</summary>
       <p>사업자등록을 진행해서 세금계산서 · 현금영수증 등 필요한 서류를 발행해드릴 예정이에요. 필요하신 서류 형태를 미리 말씀해주시면 맞춰서 준비할게요.</p>
@@ -525,19 +540,19 @@
     </details>
     <details>
       <summary>최소 입찰 금액과 재입찰 규정이 궁금해요.</summary>
-      <p>자리별 최소 입찰가는 5만원이에요. 이미 다른 병원이 입찰한 자리는 현재 금액보다 높은 금액으로만 재입찰할 수 있고, 유니폼 인쇄 시간을 확보하기 위해 입찰은 9월 30일까지만 진행돼요.</p>
+      <p>자리별 최소 입찰가는 5만원이에요. 이미 다른 업체가 입찰한 자리는 현재 금액보다 높은 금액으로만 재입찰할 수 있고, 유니폼 인쇄 시간을 확보하기 위해 입찰은 9월 30일까지만 진행돼요.</p>
     </details>
     <details>
       <summary>노출은 어떻게 증명되나요?</summary>
       <p>대회(10월 10일) 종료 후, 해당 부위가 노출된 실제 착용 사진을 15장 촬영해서 전달해드려요. 경기 중뿐 아니라 대기시간 · 워밍업 · 시상식 등 대회 당일 여러 순간에 노출돼요.</p>
     </details>
     <details>
-      <summary>여러 병원이 동시에 이 페이지를 볼 수 있나요?</summary>
-      <p>네, 이 페이지는 실시간으로 공유돼서 여러 병원이 동시에 둘러보고 입찰할 수 있어요. 다른 곳이 이미 확정한 자리는 화면에 바로 표시돼서 헷갈릴 일이 없어요.</p>
+      <summary>여러 업체가 동시에 이 페이지를 볼 수 있나요?</summary>
+      <p>네, 이 페이지는 실시간으로 공유돼서 여러 업체가 동시에 둘러보고 입찰할 수 있어요. 다른 곳이 이미 확정한 자리는 화면에 바로 표시돼서 헷갈릴 일이 없어요.</p>
     </details>
     <details>
       <summary>원하는 위치가 목록에 없어요.</summary>
-      <p>사진 위의 "+ 새 위치 추가" 버튼으로 원하는 자리를 직접 그려서 새로 만들 수 있어요. 만든 자리는 다른 병원에게도 똑같이 보여요.</p>
+      <p>사진 위의 "+ 새 위치 추가" 버튼으로 원하는 자리를 직접 그려서 새로 만들 수 있어요. 만든 자리는 다른 업체에게도 똑같이 보여요.</p>
     </details>
   </div>
 
@@ -1032,7 +1047,7 @@
   async function openAddZoneModal(view, rect){
     showModal({
       title: "새 광고 위치 추가",
-      desc: "이 위치에 붙일 이름을 정해주세요 (예: 오른쪽 어깨, 모자 등). 추가하면 다른 병원도 여기에 입찰할 수 있어요.",
+      desc: "이 위치에 붙일 이름을 정해주세요 (예: 오른쪽 어깨, 모자 등). 추가하면 다른 업체도 여기에 입찰할 수 있어요.",
       fields: [{key:"label", label:"위치 이름", placeholder:"예: 오른쪽 어깨"}],
       confirmLabel: "추가",
       onConfirm: async function(values){
@@ -1296,14 +1311,14 @@
     showModal({
       title: "입찰 확정 안내",
       desc: bidderName + "님, 입찰 감사해요!\n\n" +
-        "이 자리는 아직 최종 확정이 아니에요. 입찰 마감일(9월 30일)까지 다른 병원·한의원이 더 높은 금액을 제시하면 순위가 바뀔 수 있으니, 마감 전까지 현황을 틈틈이 확인해주세요.\n\n" +
+        "이 자리는 아직 최종 확정이 아니에요. 입찰 마감일(9월 30일)까지 다른 업체가 더 높은 금액을 제시하면 순위가 바뀔 수 있으니, 마감 전까지 현황을 틈틈이 확인해주세요.\n\n" +
         "최종 낙찰자가 결정되면 이메일로 확정 안내를 드릴게요.",
       fields: [],
       confirmLabel: "추가문의하기",
       cancelLabel: "확인",
       onConfirm: function(){
         var subject = "[스폰서 입찰 문의] " + label + " - " + bidderName;
-        var body = "구역: " + label + "\n기관명: " + bidderName + "\n입찰 금액: " + bid.toLocaleString("ko-KR") + "원" +
+        var body = "구역: " + label + "\n업체명: " + bidderName + "\n입찰 금액: " + bid.toLocaleString("ko-KR") + "원" +
           "\n\n문의 내용:\n";
         window.location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
       }
@@ -1327,9 +1342,9 @@
       title: label + " 확정",
       desc: current > 0
         ? ("현재 입찰가는 " + current.toLocaleString("ko-KR") + "원이에요.\n더 높은 금액을 입력하고 확정하세요.")
-        : ("최소 입찰가는 " + MIN_BID.toLocaleString("ko-KR") + "원이에요.\n기관명과 입찰 금액을 입력하세요."),
+        : ("최소 입찰가는 " + MIN_BID.toLocaleString("ko-KR") + "원이에요.\n업체명과 입찰 금액을 입력하세요."),
       fields: [
-        {key:"bidder", label:"기관/병원명", placeholder:"예: 서울재활의원", value: state.zones[id].bidder || ""},
+        {key:"bidder", label:"업체명", placeholder:"업체명을 입력하세요", value: state.zones[id].bidder || ""},
         {key:"amount", label:"입찰 금액 (원)", placeholder:String(minRequired), value: String(minRequired), numeric:true}
       ],
       confirmLabel: "확정",
@@ -1337,7 +1352,7 @@
         var bidderName = (values.bidder || "").trim();
         var bid = parseInt(String(values.amount).replace(/[^0-9]/g, ""), 10);
         if(!bidderName){
-          showToast("기관/병원명을 입력해주세요.", "error");
+          showToast("업체명을 입력해주세요.", "error");
           return;
         }
         if(!bid || bid < minRequired){
@@ -1458,7 +1473,7 @@
     var heroBtn = document.getElementById("heroContactBtn");
     var mailBtn = document.getElementById("contactMailBtn");
     var subject = encodeURIComponent("광고 슬롯 문의");
-    var body = encodeURIComponent("안녕하세요, 광고 슬롯 관련 문의드립니다.\n\n기관/병원명:\n문의 내용:\n");
+    var body = encodeURIComponent("안녕하세요, 광고 슬롯 관련 문의드립니다.\n\n업체명:\n문의 내용:\n");
     var href = "mailto:" + CONTACT_EMAIL + "?subject=" + subject + "&body=" + body;
     if(heroBtn) heroBtn.href = href;
     if(mailBtn) mailBtn.href = href;
