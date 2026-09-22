@@ -790,7 +790,7 @@
         if(!data || !data.success) throw new Error("save failed");
         if(data.imageUrl) url = data.imageUrl; // 서버(드라이브)에 저장된 실제 링크로 교체
       }catch(err){
-        showToast("서버 저장에 실패했어요. 네트워크를 확인하고 다시 시도해주세요.", "error");
+        showServerError("서버 저장에 실패했어요.", data);
         if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = "확정"; }
         return false;
       }
@@ -822,7 +822,7 @@
         var data = await res.json();
         if(!data || !data.success) throw new Error("clear failed");
       }catch(err){
-        showToast("삭제에 실패했어요. 다시 시도해주세요.", "error");
+        showServerError("삭제에 실패했어요.", data);
         return;
       }
     }
@@ -988,7 +988,7 @@
             var data = await res.json();
             if(!data || !data.success) throw new Error("addZone failed");
           }catch(err){
-            showToast("위치 추가에 실패했어요. 다시 시도해주세요.", "error");
+            showServerError("위치 추가에 실패했어요.", data);
             return;
           }
         }
@@ -1010,7 +1010,7 @@
         var data = await res.json();
         if(!data || !data.success) throw new Error("delete failed");
       }catch(err){
-        showToast("삭제에 실패했어요. 다시 시도해주세요.", "error");
+        showServerError("삭제에 실패했어요.", data);
         return;
       }
     }
@@ -1116,6 +1116,11 @@
       svg.addEventListener("touchend", finish);
     });
   })();
+
+  function showServerError(prefix, data){
+    var detail = (data && data.error) ? (" (" + data.error + ")") : "";
+    showToast(prefix + detail, "error");
+  }
 
   function showToast(message, type){
     var host = document.getElementById("toastHost");
