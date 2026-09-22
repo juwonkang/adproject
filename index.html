@@ -213,6 +213,7 @@
   }
   .btn-solid:hover{opacity:.9;}
   .btn-text{border:none;background:transparent;color:var(--text-soft);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;}
+  .btn-text:disabled{opacity:.5;cursor:default;text-decoration:none;}
   .btn-link{
     border:none;background:transparent;color:var(--text-soft);font-size:12.5px;cursor:pointer;
     text-decoration:underline;padding:0;margin-top:12px;font-family:'Manrope',sans-serif;
@@ -803,10 +804,17 @@
     if(uploadBtn) uploadBtn.textContent = draft ? "다시 선택" : (data.image ? "재입찰" : "업로드");
     var confirmBtn = document.querySelector('[data-confirm="'+id+'"]');
     if(confirmBtn) confirmBtn.hidden = !draft;
+    var isConfirmed = !draft && (parseInt(data.price, 10) || 0) > 0;
     var removeBtn = document.querySelector('[data-remove-btn="'+id+'"]');
     if(removeBtn){
       removeBtn.hidden = !draft && !data.image;
-      removeBtn.textContent = draft ? "취소" : "삭제";
+      removeBtn.disabled = isConfirmed;
+      removeBtn.textContent = draft ? "취소" : (isConfirmed ? "삭제 불가" : "삭제");
+    }
+    var deleteZoneBtn = document.querySelector('[data-delete-zone="'+id+'"]');
+    if(deleteZoneBtn){
+      deleteZoneBtn.disabled = isConfirmed;
+      deleteZoneBtn.textContent = isConfirmed ? "위치 삭제 불가" : "위치 삭제";
     }
     var priceEl = document.querySelector('[data-price="'+id+'"] .slot-price-text');
     if(priceEl){
@@ -909,6 +917,11 @@
     if(draftImages[id]){
       draftImages[id] = null;
       renderZone(id);
+      return;
+    }
+    var confirmedPrice = parseInt(state.zones[id] ? state.zones[id].price : 0, 10) || 0;
+    if(confirmedPrice > 0){
+      showToast("이미 확정된 입찰은 삭제할 수 없어요.", "error");
       return;
     }
     if(isBackendConfigured()){
