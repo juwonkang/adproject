@@ -599,6 +599,48 @@
     return !!API_URL && API_URL.indexOf("REPLACE_WITH") !== 0;
   }
 
+  // Google Apps Script 웹앱은 브라우저에서 fetch()로 바로 접근하면 CORS(교차 출처) 문제로
+  // 막히는 경우가 흔해서, 읽기는 <script> 태그로 불러오는 JSONP 방식을 씁니다.
+  // (JSONP는 CORS 제약을 받지 않아서 안정적으로 동작해요.)
+  function jsonp(url, params){
+    return new Promise(function(resolve, reject){
+      var cbName = "sponsorCb_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
+      var script = document.createElement("script");
+      var timer = setTimeout(function(){ cleanup(); reject(new Error("timeout")); }, 12000);
+      function cleanup(){
+        clearTimeout(timer);
+        delete window[cbName];
+        if(script.parentNode) script.parentNode.removeChild(script);
+      }
+      window[cbName] = function(data){ cleanup(); resolve(data); };
+      script.onerror = function(){ cleanup(); reject(new Error("load error")); };
+      var qs = "callback=" + encodeURIComponent(cbName);
+      if(params){
+        Object.keys(params).forEach(function(k){
+          if(params[k] === undefined || params[k] === null) return;
+          qs += "&" + encodeURIComponent(k) + "=" + encodeURIComponent(params[k]);
+        });
+      }
+      script.src = url + (url.indexOf("?") === -1 ? "?" : "&") + qs;
+      document.head.appendChild(script);
+    });
+  }
+
+  function sleep(ms){ return new Promise(function(resolve){ setTimeout(resolve, ms); }); }
+
+  // 이미지가 포함된 "확정" 요청은 용량이 커서 JSONP(주소창 길이 제한)로 못 보내니
+  // no-cors POST로 그냥 보내고, 저장됐는지는 잠시 후 다시 읽어와서 직접 확인합니다.
+  async function pollZoneUntil(id, predicate, attempts, delayMs){
+    for(var i = 0; i < attempts; i++){
+      await sleep(delayMs);
+      try{
+        var data = await jsonp(API_URL);
+        if(data && data.zones && predicate(data.zones[id], data.zones)) return data.zones;
+      }catch(err){ /* 다음 시도에서 재확인 */ }
+    }
+    return null;
+  }
+
   var ZONES = [
     {id:"chestLeft",   label:"왼쪽 가슴",   group:"front"},
     {id:"chestRight",  label:"오른쪽 가슴", group:"front"},
@@ -650,8 +692,7 @@
   async function loadZonesFromServer(){
     if(!isBackendConfigured()) return;
     try{
-      var res = await fetch(API_URL, { method: "GET" });
-      var data = await res.json();
+      var data = await jsonp(API_URL);
       if(data && data.zones){
         var knownIds = ZONES.map(function(z){ return z.id; });
         Object.keys(data.zones).forEach(function(zoneId){
@@ -782,15 +823,24 @@
     if(isBackendConfigured()){
       if(confirmBtn){ confirmBtn.disabled = true; confirmBtn.textContent = "저장 중..."; }
       try{
-        var res = await fetch(API_URL, {
+        // 로고 이미지가 포함된 요청이라 용량이 커서 JSONP로는 못 보내요.
+        // no-cors로 전송만 하고(응답은 읽을 수 없음), 실제로 저장됐는지는 다시 읽어와서 직접 확인합니다.
+        await fetch(API_URL, {
           method: "POST",
+          mode: "no-cors",
           body: JSON.stringify({ zoneId:id, label:label, bidder:bidder, price:price, imageBase64:url })
         });
-        var data = await res.json();
-        if(!data || !data.success) throw new Error("save failed");
-        if(data.imageUrl) url = data.imageUrl; // 서버(드라이브)에 저장된 실제 링크로 교체
+        var confirmedZones = await pollZoneUntil(id, function(z){
+          return !!z && String(z.price) === String(price) && (z.bidder || "") === (bidder || "");
+        }, 6, 1200);
+        if(!confirmedZones){
+          showServerError("서버 저장에 실패했어요.", null);
+          if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = "확정"; }
+          return false;
+        }
+        if(confirmedZones[id].image) url = confirmedZones[id].image; // 서버(드라이브)에 저장된 실제 링크로 교체
       }catch(err){
-        showServerError("서버 저장에 실패했어요.", data);
+        showServerError("서버 저장에 실패했어요.", null);
         if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = "확정"; }
         return false;
       }
@@ -815,11 +865,7 @@
     var label = LABELS[id] || id;
     if(isBackendConfigured()){
       try{
-        var res = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify({ zoneId:id, label:label, action:"clear" })
-        });
-        var data = await res.json();
+        var data = await jsonp(API_URL, { action:"clear", zoneId:id, label:label });
         if(!data || !data.success) throw new Error("clear failed");
       }catch(err){
         showServerError("삭제에 실패했어요.", data);
@@ -981,11 +1027,7 @@
         var id = "custom_" + Date.now();
         if(isBackendConfigured()){
           try{
-            var res = await fetch(API_URL, {
-              method: "POST",
-              body: JSON.stringify({ zoneId:id, label:label, action:"addZone", view:view, x:rect.x, y:rect.y, w:rect.w, h:rect.h })
-            });
-            var data = await res.json();
+            var data = await jsonp(API_URL, { action:"addZone", zoneId:id, label:label, view:view, x:rect.x, y:rect.y, w:rect.w, h:rect.h });
             if(!data || !data.success) throw new Error("addZone failed");
           }catch(err){
             showServerError("위치 추가에 실패했어요.", data);
@@ -1006,8 +1048,7 @@
     }
     if(isBackendConfigured()){
       try{
-        var res = await fetch(API_URL, { method:"POST", body: JSON.stringify({ zoneId:id, action:"deleteZone" }) });
-        var data = await res.json();
+        var data = await jsonp(API_URL, { action:"deleteZone", zoneId:id });
         if(!data || !data.success) throw new Error("delete failed");
       }catch(err){
         showServerError("삭제에 실패했어요.", data);
