@@ -194,6 +194,13 @@
   .slot-row.draft .slot-price .dot{background:var(--gold);}
   .slot-row.filled .slot-price{color:var(--gold);}
   .slot-row.filled .slot-price .dot{background:var(--gold);}
+  .slot-price-text{display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
+  .slot-bidder{font-weight:800;font-size:14px;color:var(--text);}
+  .slot-amount{
+    font-weight:800;font-size:12.5px;white-space:nowrap;
+    background:var(--gold);color:var(--surface);padding:3px 10px;border-radius:999px;
+  }
+  .slot-confirmed-tag{font-weight:700;font-size:11px;color:var(--gold-strong);white-space:nowrap;}
   .slot-actions{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
   .btn-ghost{
     border:1px solid var(--gold);color:var(--gold);background:transparent;font-family:'Manrope',sans-serif;
@@ -716,6 +723,12 @@
     return v === true || v === "true" || v === "TRUE" || v === 1 || v === "1";
   }
 
+  function escapeHtml(str){
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
   async function loadZonesFromServer(){
     if(!isBackendConfigured()) return null;
     try{
@@ -801,9 +814,14 @@
         priceEl.textContent = "미리보기 중 · 확정 전";
       } else {
         var p = parseInt(data.price, 10) || 0;
-        priceEl.textContent = p > 0
-          ? ((data.bidder ? data.bidder + " · " : "") + p.toLocaleString("ko-KR") + "원 · 확정됨")
-          : ("최소 입찰가 " + MIN_BID.toLocaleString("ko-KR") + "원");
+        if(p > 0){
+          priceEl.innerHTML =
+            (data.bidder ? '<span class="slot-bidder">'+escapeHtml(data.bidder)+'</span>' : '') +
+            '<span class="slot-amount">'+p.toLocaleString("ko-KR")+'원</span>' +
+            '<span class="slot-confirmed-tag">✓ 확정</span>';
+        } else {
+          priceEl.textContent = "최소 입찰가 " + MIN_BID.toLocaleString("ko-KR") + "원";
+        }
       }
     }
   }
