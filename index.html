@@ -925,18 +925,31 @@
   async function setZoneBid(id, price, url, bidder, email){
     var label = LABELS[id] || id;
     var confirmBtn = document.querySelector('[data-confirm="'+id+'"]');
+    // 이 확정으로 밀려나는(뺏기는) 이전 입찰자가 있으면, 그 사람한테도 "outbid" 알림메일이
+    // 갈 수 있도록 이전 정보를 같이 저장해둡니다. (본인이 자기 입찰을 올리는 경우는 제외)
+    var prev = state.zones[id] || {};
+    var prevPrice = parseInt(prev.price, 10) || 0;
+    var prevEmail = (prev.bidderEmail || "").trim();
+    var isOutbid = prevPrice > 0 && !!prevEmail && prevEmail.toLowerCase() !== (email || "").trim().toLowerCase();
     if(isBackendConfigured()){
       if(confirmBtn){ confirmBtn.disabled = true; confirmBtn.textContent = "저장 중..."; }
+      var fields = {
+        label: label,
+        bidder: bidder || "",
+        price: price,
+        imageUrl: url,
+        bidderEmail: email || "",
+        notified: "",
+        updatedAt: new Date().toISOString()
+      };
+      if(isOutbid){
+        fields.prevBidder = prev.bidder || "";
+        fields.prevPrice = prevPrice;
+        fields.prevEmail = prevEmail;
+        fields.prevNotified = "";
+      }
       try{
-        await sheetUpsert(id, {
-          label: label,
-          bidder: bidder || "",
-          price: price,
-          imageUrl: url,
-          bidderEmail: email || "",
-          notified: "",
-          updatedAt: new Date().toISOString()
-        });
+        await sheetUpsert(id, fields);
       }catch(err){
         showServerError("서버 저장에 실패했어요.", err);
         if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = "확정"; }
