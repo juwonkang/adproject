@@ -140,6 +140,9 @@
   .zone .zone-badge circle{fill:var(--gold);}
   .zone .zone-badge line{stroke:#241A10;stroke-width:3.2;stroke-linecap:round;}
   .zone .zone-hit{fill:transparent;}
+  .zone image[data-zone-image]{
+    filter:brightness(0.95) contrast(1.05) saturate(0.94) drop-shadow(0 1px 1.5px rgba(0,0,0,0.4));
+  }
   .zone.filled .zone-rect, .zone.draft .zone-rect{display:none;}
   .zone.filled .zone-badge, .zone.draft .zone-badge{display:none;}
   .zone-remove{display:none;cursor:pointer;}
@@ -339,6 +342,25 @@
   .modal-field input:focus{outline:none;border-color:var(--gold);}
   .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;}
   .modal-actions .btn-ghost, .modal-actions .btn-solid{padding:9px 18px;font-size:13.5px;}
+
+  .guide-btn{width:100%;margin:2px 0 20px;text-align:center;}
+  .guide-card{max-width:460px;max-height:82vh;display:flex;flex-direction:column;padding:24px;}
+  .guide-tip{
+    font-size:12.5px;line-height:1.6;color:var(--text-soft);background:var(--gold-soft);
+    border:1px solid var(--gold);border-radius:10px;padding:10px 12px;margin:0 0 16px;
+  }
+  .guide-list{overflow-y:auto;margin:0 -4px 18px;padding:0 4px;display:flex;flex-direction:column;gap:10px;}
+  .guide-item{border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+  .guide-item-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .guide-item-head strong{font-size:14px;color:var(--text);}
+  .guide-tag{
+    font-size:11px;font-weight:700;color:var(--gold-strong);background:var(--gold-soft);
+    border:1px solid var(--gold);border-radius:999px;padding:3px 9px;white-space:nowrap;
+  }
+  .guide-item-body{display:flex;flex-direction:column;gap:4px;}
+  .guide-item-body div{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;}
+  .guide-k{color:var(--text-soft);flex-shrink:0;}
+  .guide-v{color:var(--text);font-weight:700;text-align:right;}
 </style>
 </head>
 <body>
@@ -379,18 +401,36 @@
             <div class="photo-stage">
               <img class="photo-base" alt="정면" src="front.png">
               <svg class="zone-overlay" viewBox="0 0 440 1371" preserveAspectRatio="xMidYMid meet">
-                <clipPath id="clip-chestLeft"><rect x="125" y="255" width="85" height="65" rx="14"/></clipPath>
+                <clipPath id="clip-chestLeft"><rect x="230" y="255" width="85" height="65" rx="14"/></clipPath>
                 <clipPath id="clip-stomach"><rect x="140" y="370" width="160" height="90" rx="16"/></clipPath>
                 <clipPath id="clip-shortsLogo"><rect x="255" y="735" width="60" height="50" rx="10"/></clipPath>
                 <clipPath id="clip-shinLeft"><rect x="95" y="1040" width="44" height="44" rx="8"/></clipPath>
                 <clipPath id="clip-shinRight"><rect x="305" y="1040" width="44" height="44" rx="8"/></clipPath>
+                <clipPath id="clip-armLeft"><rect x="348" y="315" width="52" height="67" rx="10"/></clipPath>
+                <clipPath id="clip-armRight"><rect x="40" y="315" width="52" height="67" rx="10"/></clipPath>
 
                 <g class="zone" data-zone="chestLeft">
-                  <image data-zone-image="chestLeft" clip-path="url(#clip-chestLeft)" x="125" y="255" width="85" height="65" preserveAspectRatio="xMidYMid slice"/>
-                  <rect class="zone-rect" x="125" y="255" width="85" height="65" rx="14"/>
-                  <g class="zone-badge"><circle cx="167.5" cy="287.5" r="16"/><line x1="159.5" y1="287.5" x2="175.5" y2="287.5"/><line x1="167.5" y1="279.5" x2="167.5" y2="295.5"/></g>
-                  <rect class="zone-hit" x="125" y="255" width="85" height="65" rx="14"/>
-                  <g class="zone-remove" data-zone-remove="chestLeft"><circle cx="199" cy="266" r="13"/><line x1="194" y1="261" x2="204" y2="271"/><line x1="204" y1="261" x2="194" y2="271"/></g>
+                  <image data-zone-image="chestLeft" clip-path="url(#clip-chestLeft)" x="230" y="255" width="85" height="65" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="230" y="255" width="85" height="65" rx="14"/>
+                  <g class="zone-badge"><circle cx="272.5" cy="287.5" r="16"/><line x1="264.5" y1="287.5" x2="280.5" y2="287.5"/><line x1="272.5" y1="279.5" x2="272.5" y2="295.5"/></g>
+                  <rect class="zone-hit" x="230" y="255" width="85" height="65" rx="14"/>
+                  <g class="zone-remove" data-zone-remove="chestLeft"><circle cx="304" cy="266" r="13"/><line x1="299" y1="261" x2="309" y2="271"/><line x1="309" y1="261" x2="299" y2="271"/></g>
+                </g>
+
+                <g class="zone" data-zone="armRight">
+                  <image data-zone-image="armRight" clip-path="url(#clip-armRight)" x="40" y="315" width="52" height="67" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="40" y="315" width="52" height="67" rx="10"/>
+                  <g class="zone-badge"><circle cx="66" cy="348.5" r="13"/><line x1="58" y1="348.5" x2="74" y2="348.5"/><line x1="66" y1="340.5" x2="66" y2="356.5"/></g>
+                  <rect class="zone-hit" x="40" y="315" width="52" height="67" rx="10"/>
+                  <g class="zone-remove" data-zone-remove="armRight"><circle cx="82" cy="325" r="11"/><line x1="77" y1="320" x2="87" y2="330"/><line x1="87" y1="320" x2="77" y2="330"/></g>
+                </g>
+
+                <g class="zone" data-zone="armLeft">
+                  <image data-zone-image="armLeft" clip-path="url(#clip-armLeft)" x="348" y="315" width="52" height="67" preserveAspectRatio="xMidYMid slice"/>
+                  <rect class="zone-rect" x="348" y="315" width="52" height="67" rx="10"/>
+                  <g class="zone-badge"><circle cx="374" cy="348.5" r="13"/><line x1="366" y1="348.5" x2="382" y2="348.5"/><line x1="374" y1="340.5" x2="374" y2="356.5"/></g>
+                  <rect class="zone-hit" x="348" y="315" width="52" height="67" rx="10"/>
+                  <g class="zone-remove" data-zone-remove="armLeft"><circle cx="390" cy="325" r="11"/><line x1="385" y1="320" x2="395" y2="330"/><line x1="395" y1="320" x2="385" y2="330"/></g>
                 </g>
 
                 <g class="zone" data-zone="stomach">
@@ -507,11 +547,14 @@
     <div class="panel">
       <div class="progress-row"><span>슬롯 현황</span><span id="progressText">0 / 8 채워짐</span></div>
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <button class="btn-ghost guide-btn" id="printGuideBtn" type="button">📐 프린팅 가이드 보기</button>
 
       <div class="slot-group">
         <h3>상의 · 앞면</h3>
         <div class="slot-row" data-row="chestLeft"></div>
         <div class="slot-row" data-row="stomach"></div>
+        <div class="slot-row" data-row="armLeft"></div>
+        <div class="slot-row" data-row="armRight"></div>
       </div>
 
       <div class="slot-group">
@@ -554,9 +597,10 @@
     <h2>진행 프로세스</h2>
     <p class="sub">낙찰 확정 후 이렇게 진행돼요</p>
     <ol class="process-steps">
-      <li><strong>낙찰 확정</strong> — 확인 후 이메일로 정식 계약서를 보내드려요</li>
-      <li><strong>계약 체결 &amp; 선금 결제</strong> — 계약금(선급금) 50%를 입금해주시면 진행이 시작돼요</li>
-      <li><strong>샘플 이미지 전달</strong> — 확정하신 로고를 실제로 적용한 샘플 사진 1장을 보내드려서 배치를 확인해요</li>
+      <li><strong>낙찰 확정 (10월 1일)</strong> — 확인 후 이메일로 낙찰 안내를 드리고, 로고 이미지(CI 파일)를 요청드려요</li>
+      <li><strong>시안 &amp; 계약서 전달</strong> — 로고를 적용한 시안 이미지와 정식 계약서를 함께 보내드려요</li>
+      <li><strong>계약 체결 &amp; 선금 결제</strong> — 계약금(선금) 50%를 입금해주시면 프린팅이 시작돼요</li>
+      <li><strong>최종 프린팅 본 전달</strong> — 확정하신 로고를 실제로 적용한 샘플 사진을 보내드려서 확인해요</li>
       <li><strong>대회 진행 &amp; 노출 인증</strong> — 대회(10월 10일) 종료 후, 해당 구역이 노출된 실제 착용 사진 15장을 촬영해 전달해요</li>
       <li><strong>잔금 정산</strong> — 사진 확인 후 잔금(나머지 50%)을 정산하면 완료돼요</li>
     </ol>
@@ -625,6 +669,18 @@
     <div class="modal-actions">
       <button class="btn-ghost" id="modalCancelBtn" type="button">취소</button>
       <button class="btn-solid" id="modalConfirmBtn" type="button">확인</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="guideOverlay" hidden>
+  <div class="modal-card guide-card">
+    <h3 class="modal-title">프린팅 가이드</h3>
+    <p class="modal-desc">나염업체에 파일 넘기실 때 참고하세요. 아래는 일반적인 스포츠 유니폼 로고 기준 권장 사이즈고, 실측은 실물 유니폼에 대보고 업체와 한 번 더 맞춰보시는 걸 추천해요.</p>
+    <p class="guide-tip">💡 로고 원본 벡터 파일(AI · EPS · PDF 등 CI 파일)이 있으면 크기와 상관없이 가장 깨끗하게 나와요. 벡터가 없다면 아래 최소 해상도 이상의 배경 투명 PNG로 준비해주세요.</p>
+    <div class="guide-list" id="guideList"></div>
+    <div class="modal-actions">
+      <button class="btn-solid" id="guideCloseBtn" type="button">닫기</button>
     </div>
   </div>
 </div>
@@ -706,6 +762,8 @@
   var ZONES = [
     {id:"chestLeft",   label:"왼쪽 가슴",   group:"front"},
     {id:"stomach",     label:"배",          group:"front"},
+    {id:"armLeft",     label:"왼쪽 팔",     group:"front"},
+    {id:"armRight",    label:"오른쪽 팔",   group:"front"},
     {id:"backUpper",   label:"등 위쪽",     group:"back"},
     {id:"backLower",   label:"등 아래쪽",   group:"back"},
     {id:"backWaist",   label:"허리",        group:"back"},
@@ -716,6 +774,24 @@
     {id:"shortsLogo",  label:"하의 로고",   group:"front"}
   ];
   var LABELS = {};
+
+  // 나염업체에 넘길 때 참고할 자리별 권장 규격. 300dpi(인쇄용 표준 해상도) 기준으로
+  // 최소 해상도를 역산했어요. 실측은 실물 유니폼 기준이라 업체와 한 번 더 맞춰보는 게 안전해요.
+  var ZONE_GUIDE = {
+    chestLeft:  {size:"가로 9 x 세로 7cm",  px:"1060 x 830px 이상", type:"로고 전용 (심볼 위주, 텍스트는 잘 안 보여요)"},
+    stomach:    {size:"가로 16 x 세로 9cm", px:"1890 x 1060px 이상", type:"로고 + 업체명 문구 함께 배치 가능"},
+    armLeft:    {size:"가로 6 x 세로 7.5cm", px:"710 x 890px 이상",  type:"로고 전용 (소매, 작은 심볼 형태)"},
+    armRight:   {size:"가로 6 x 세로 7.5cm", px:"710 x 890px 이상",  type:"로고 전용 (소매, 작은 심볼 형태)"},
+    backUpper:  {size:"가로 22 x 세로 8cm", px:"2600 x 950px 이상",  type:"업체명 또는 짧은 문구 (가로로 긴 슬로건 형태)"},
+    backLower:  {size:"가로 22 x 세로 9cm", px:"2600 x 1060px 이상", type:"로고 + 문구"},
+    backWaist:  {size:"가로 20 x 세로 13cm", px:"2360 x 1540px 이상", type:"가장 넓은 자리 - 큰 로고나 복합 디자인"},
+    calfLeft:   {size:"가로 4 x 세로 11cm", px:"470 x 1300px 이상",  type:"세로형 로고 또는 브랜드명"},
+    calfRight:  {size:"가로 4 x 세로 11cm", px:"470 x 1300px 이상",  type:"세로형 로고 또는 브랜드명"},
+    shinLeft:   {size:"가로 5 x 세로 5cm",  px:"600 x 600px 이상",   type:"정사각형 심볼 로고 전용"},
+    shinRight:  {size:"가로 5 x 세로 5cm",  px:"600 x 600px 이상",   type:"정사각형 심볼 로고 전용"},
+    shortsLogo: {size:"가로 6 x 세로 5cm",  px:"710 x 590px 이상",   type:"작은 심볼 로고 전용"}
+  };
+  var ZONE_GUIDE_DEFAULT = {size:"실물에 대보고 결정", px:"1000px 이상 권장", type:"직접 추가한 자리 - 위치에 맞는 로고나 문구를 자유롭게 올려주세요"};
 
   var defaultState = {
     athleteName: "2026 빅터코리아 x 배프 머니컵",
@@ -1233,6 +1309,63 @@
     if(!ctm) return {x:0, y:0};
     return pt.matrixTransform(ctm.inverse());
   }
+
+  (function setupPrintGuide(){
+    var btn = document.getElementById("printGuideBtn");
+    var overlay = document.getElementById("guideOverlay");
+    var closeBtn = document.getElementById("guideCloseBtn");
+    var list = document.getElementById("guideList");
+    if(!btn || !overlay) return;
+
+    function buildItem(label, g, isCustom){
+      var item = document.createElement("div");
+      item.className = "guide-item";
+
+      var head = document.createElement("div");
+      head.className = "guide-item-head";
+      var strong = document.createElement("strong");
+      strong.textContent = label + (isCustom ? " (직접 추가)" : "");
+      var tag = document.createElement("span");
+      tag.className = "guide-tag";
+      tag.textContent = g.type;
+      head.appendChild(strong);
+      head.appendChild(tag);
+
+      var body = document.createElement("div");
+      body.className = "guide-item-body";
+      [["권장 사이즈", g.size], ["최소 해상도", g.px]].forEach(function(pair){
+        var row = document.createElement("div");
+        var k = document.createElement("span");
+        k.className = "guide-k"; k.textContent = pair[0];
+        var v = document.createElement("span");
+        v.className = "guide-v"; v.textContent = pair[1];
+        row.appendChild(k); row.appendChild(v);
+        body.appendChild(row);
+      });
+
+      item.appendChild(head);
+      item.appendChild(body);
+      return item;
+    }
+
+    function openGuide(){
+      list.innerHTML = "";
+      ZONES.forEach(function(z){
+        list.appendChild(buildItem(z.label, ZONE_GUIDE[z.id] || ZONE_GUIDE_DEFAULT, false));
+      });
+      var presetIds = ZONES.map(function(z){ return z.id; });
+      Object.keys(state.zones).forEach(function(id){
+        if(presetIds.indexOf(id) !== -1) return;
+        list.appendChild(buildItem(LABELS[id] || id, ZONE_GUIDE_DEFAULT, true));
+      });
+      overlay.hidden = false;
+    }
+    function closeGuide(){ overlay.hidden = true; }
+
+    btn.addEventListener("click", openGuide);
+    closeBtn.addEventListener("click", closeGuide);
+    overlay.addEventListener("click", function(e){ if(e.target === overlay) closeGuide(); });
+  })();
 
   (function setupDrawMode(){
     var addBtn = document.getElementById("addZoneBtn");
