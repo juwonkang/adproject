@@ -207,7 +207,7 @@
   .slot-confirmed-tag{font-weight:700;font-size:11px;color:var(--gold-strong);white-space:nowrap;}
   .slot-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
   .slot-actions-row{display:flex;align-items:center;gap:6px;}
-  .slot-actions-secondary{gap:10px;min-height:0;}
+  .slot-actions-secondary{gap:6px 10px;min-height:0;flex-wrap:wrap;justify-content:flex-end;}
   .btn-ghost{
     border:1px solid var(--gold);color:var(--gold);background:transparent;font-family:'Manrope',sans-serif;
     font-weight:700;font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;
@@ -383,8 +383,8 @@
 
   <header>
     <div class="title-block">
-      <input class="field" id="athleteName" value="2026 빅터코리아 x 배프 머니컵" maxlength="40">
-      <input class="field-sub" id="eventLabel" value="10월 10일 가산체육문화센터 · 유니폼에 로고를 실어드립니다" maxlength="60">
+      <div class="field" id="athleteName">2026 빅터코리아 x 배프 머니컵</div>
+      <div class="field-sub" id="eventLabel">10월 10일 가산체육문화센터 · 유니폼에 로고를 실어드립니다</div>
     </div>
     <div class="badges">
       <div class="badge" id="eventBadge"><span class="dot"></span></div>
@@ -583,10 +583,9 @@
       </div>
 
       <div class="contact-card">
-        <input class="contact-field" id="contact" value="문의 wndnjs1100@gmail.com" maxlength="40">
+        <div class="contact-field" id="contact">문의 wndnjs1100@gmail.com</div>
         <div style="display:flex;align-items:center;gap:14px;">
           <a class="btn-link" id="contactMailBtn" href="#">이메일 보내기</a>
-          <button class="reset-btn" id="resetBtn" type="button">전체 초기화</button>
         </div>
       </div>
     </div>
@@ -803,16 +802,13 @@
 
   var state = JSON.parse(JSON.stringify(defaultState));
 
-  // 이름/소개문구/연락처는 계속 이 브라우저에만 저장됩니다 (본인이 한 번 정해두는 값이라
-  // 굳이 서버까지 안 가도 돼요). 실제 입찰 데이터(zones)만 아래에서 서버와 동기화합니다.
+  // 제목/소개문구/연락처는 방문자가 바꿀 수 없는 고정 텍스트예요 (코드의 defaultState 값을
+  // 직접 수정해야 바뀌어요). 실제 입찰 데이터(zones)만 아래에서 서버와 동기화합니다.
   function loadProfile(){
     try{
       var raw = localStorage.getItem(STORAGE_KEY);
       if(!raw) return;
       var parsed = JSON.parse(raw);
-      if(parsed.athleteName) state.athleteName = parsed.athleteName;
-      if(parsed.eventLabel) state.eventLabel = parsed.eventLabel;
-      if(parsed.contact) state.contact = parsed.contact;
       if(!isBackendConfigured() && parsed.zones){
         ZONES.forEach(function(z){
           if(parsed.zones[z.id]){
@@ -927,9 +923,13 @@
       deleteZoneBtn.disabled = false;
       deleteZoneBtn.textContent = isConfirmed ? "위치 삭제(코드)" : "위치 삭제";
     }
+    var resendBtn = document.querySelector('[data-resend-email="'+id+'"]');
+    if(resendBtn){
+      resendBtn.hidden = !isConfirmed || !isBackendConfigured();
+    }
     var secondaryRow = document.querySelector('[data-secondary="'+id+'"]');
     if(secondaryRow){
-      secondaryRow.hidden = (!removeBtn || removeBtn.hidden) && !deleteZoneBtn;
+      secondaryRow.hidden = (!removeBtn || removeBtn.hidden) && !deleteZoneBtn && (!resendBtn || resendBtn.hidden);
     }
     var priceEl = document.querySelector('[data-price="'+id+'"] .slot-price-text');
     if(priceEl){
@@ -993,9 +993,9 @@
     ZONES.forEach(function(z){ renderZone(z.id); });
     renderProgress();
     renderDday();
-    document.getElementById("athleteName").value = state.athleteName;
-    document.getElementById("eventLabel").value = state.eventLabel;
-    document.getElementById("contact").value = state.contact;
+    document.getElementById("athleteName").textContent = state.athleteName;
+    document.getElementById("eventLabel").textContent = state.eventLabel;
+    document.getElementById("contact").textContent = state.contact;
   }
 
   async function setZoneBid(id, price, url, bidder, email){
@@ -1061,6 +1061,34 @@
         }
         if(kind === "zone") clearZone(id, true);
         else deleteCustomZone(id, true);
+      }
+    });
+  }
+
+  function requestResendEmail(id){
+    var label = LABELS[id] || id;
+    var current = (state.zones[id] && state.zones[id].bidderEmail) || "";
+    showModal({
+      title: "확인 메일 재발송",
+      desc: "'" + label + "' 자리에 남기신 이메일을 잘못 입력했거나 메일을 못 받으셨을 때 사용하세요.\n\n이메일을 다시 확인하고 저장하면, 몇 분 내로 확인 메일이 새로 발송돼요.",
+      fields: [
+        {key:"email", label:"연락받을 이메일", placeholder:"you@company.com", value: current}
+      ],
+      confirmLabel: "재발송",
+      onConfirm: async function(values){
+        var email = (values.email || "").trim();
+        if(!email || !isValidEmail(email)){
+          showToast("이메일을 올바르게 입력해주세요.", "error");
+          return;
+        }
+        try{
+          await sheetUpsert(id, { bidderEmail: email, notified: "" });
+          state.zones[id].bidderEmail = email;
+          renderZone(id);
+          showToast("이메일을 저장했어요. 몇 분 내로 확인 메일이 다시 발송돼요.", "success");
+        }catch(err){
+          showServerError("이메일 저장에 실패했어요.", err);
+        }
       }
     });
   }
@@ -1373,6 +1401,17 @@
     var drawStart = null;
     var previewEl = null;
 
+    // 앞모습 기준 하의 중앙(사타구니) 부위는 광고 자리로 부적절하니 직접 추가를 막아요.
+    var RESTRICTED_ZONES = {
+      front: [ {x:170, y:640, width:100, height:200} ]
+    };
+    function overlapsRestricted(view, x, y, w, h){
+      var list = RESTRICTED_ZONES[view] || [];
+      return list.some(function(r){
+        return x < r.x + r.width && x + w > r.x && y < r.y + r.height && y + h > r.y;
+      });
+    }
+
     function eventXY(e){
       if(e.touches && e.touches[0]) return {x:e.touches[0].clientX, y:e.touches[0].clientY};
       return {x:e.clientX, y:e.clientY};
@@ -1430,6 +1469,10 @@
         endDraw();
         if(w < 20 || h < 20){
           showToast("영역이 너무 작아요. 다시 그려주세요.", "error");
+          return;
+        }
+        if(overlapsRestricted(view, x, y, w, h)){
+          showToast("이 위치에는 자리를 추가할 수 없어요. 다른 위치를 선택해주세요.", "error");
           return;
         }
         openAddZoneModal(view, {x:x, y:y, w:w, h:h});
@@ -1699,6 +1742,7 @@
           '<button class="btn-ghost" data-upload="'+id+'" type="button">업로드</button>' +
         '</div>' +
         '<div class="slot-actions-row slot-actions-secondary" data-secondary="'+id+'">' +
+          '<button class="btn-text" data-resend-email="'+id+'" hidden type="button">이메일 재발송</button>' +
           '<button class="btn-text" data-remove-btn="'+id+'" hidden type="button">삭제</button>' +
           (isCustom ? '<button class="btn-text" data-delete-zone="'+id+'" type="button">위치 삭제</button>' : '') +
         '</div>' +
@@ -1720,37 +1764,9 @@
     else if(t.matches('[data-confirm]')) triggerConfirm(t.dataset.confirm);
     else if(t.matches('[data-remove-btn]')) clearZone(t.dataset.removeBtn);
     else if(t.matches('[data-delete-zone]')) deleteCustomZone(t.dataset.deleteZone);
+    else if(t.matches('[data-resend-email]')) requestResendEmail(t.dataset.resendEmail);
   });
 
-  document.getElementById("athleteName").addEventListener("input", function(ev){ state.athleteName = ev.target.value; persist(); });
-  document.getElementById("eventLabel").addEventListener("input", function(ev){ state.eventLabel = ev.target.value; persist(); });
-  document.getElementById("contact").addEventListener("input", function(ev){ state.contact = ev.target.value; persist(); });
-
-  document.getElementById("resetBtn").addEventListener("click", function(){
-    var wipesShared = isBackendConfigured();
-    showModal({
-      title: "전체 초기화",
-      desc: wipesShared
-        ? "이름/소개문구/연락처만 기본값으로 되돌려요. 이미 확정된 입찰은 공용 데이터라 여기서는 지우지 않아요."
-        : "모든 슬롯과 확정된 입찰이 초기화돼요. 되돌릴 수 없어요.",
-      confirmLabel: "초기화",
-      onConfirm: function(){
-        state.athleteName = defaultState.athleteName;
-        state.eventLabel = defaultState.eventLabel;
-        state.contact = defaultState.contact;
-        if(!wipesShared){
-          state.zones = JSON.parse(JSON.stringify(defaultState.zones));
-          try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-        } else {
-          persist();
-        }
-        draftImages = {};
-        renderAll();
-        setView("front");
-        showToast("초기화했어요.", "success");
-      }
-    });
-  });
 
   function wireContactLinks(){
     var heroBtn = document.getElementById("heroContactBtn");
