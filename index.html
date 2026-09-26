@@ -835,6 +835,25 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
 
+  // 서버(시트)에서 온 imageUrl은 우리 코드가 항상 data:image/... 형태로만 저장해요.
+  // 외부 사이트 주소가 들어오면(다른 방문자가 직접 API로 밀어넣은 경우) 화면에 안 붙여요 —
+  // 안 그러면 확정된 자리에 엉뚱한 사진을 띄우거나, 방문자 IP가 그 외부 주소로 새어나갈 수 있어요.
+  function sanitizeImageUrl(v){
+    var s = String(v || "");
+    return /^data:image\//i.test(s) ? s : "";
+  }
+
+  // 앞모습 기준 하의 중앙(사타구니) 부위는 광고 자리로 부적절하니 어디서 온 데이터든 막아요.
+  var RESTRICTED_ZONES = {
+    front: [ {x:170, y:640, width:100, height:200} ]
+  };
+  function overlapsRestricted(view, x, y, w, h){
+    var list = RESTRICTED_ZONES[view] || [];
+    return list.some(function(r){
+      return x < r.x + r.width && x + w > r.x && y < r.y + r.height && y + h > r.y;
+    });
+  }
+
   async function loadZonesFromServer(){
     if(!isBackendConfigured()) return null;
     try{
@@ -846,7 +865,7 @@
           label: row.label || "",
           bidder: row.bidder || "",
           price: row.price || "",
-          image: row.imageUrl || "",
+          image: sanitizeImageUrl(row.imageUrl),
           bidderEmail: row.bidderEmail || "",
           custom: isTruthyFlag(row.isCustom),
           view: row.view || "",
@@ -854,15 +873,35 @@
         };
       });
       var knownIds = ZONES.map(function(z){ return z.id; });
+      // 커스텀 구역 zoneId는 우리 코드가 "custom_" + 타임스탬프 형식으로만 만들어요.
+      // 외부에서 시트에 직접 이상한 값(따옴표, 태그 등)을 넣는 걸 막기 위해 이 형식이
+      // 아니면 아예 무시합니다 (화면 깨짐/스크립트 주입 방지).
+      var SAFE_CUSTOM_ID = /^custom_[0-9]{1,20}$/;
+      // 누군가 커스텀 구역을 수백~수천 개 만들어서 페이지를 무겁게 만드는 걸 막기 위한 상한.
+      var MAX_CUSTOM_ZONES = 30;
+      var customZoneCount = ZONES.filter(function(z){ return knownIds.indexOf(z.id) === -1; }).length;
+      function clampNum(v, def, min, max){
+        var n = parseFloat(v);
+        if(!isFinite(n)) n = def;
+        return Math.max(min, Math.min(max, n));
+      }
       Object.keys(zones).forEach(function(zoneId){
         var remote = zones[zoneId];
-        if(knownIds.indexOf(zoneId) === -1 && remote.custom){
+        if(knownIds.indexOf(zoneId) !== -1 || !remote.custom) return;
+        if(!SAFE_CUSTOM_ID.test(zoneId)) return; // 형식이 이상한 zoneId는 무시
+        if(customZoneCount >= MAX_CUSTOM_ZONES) return; // 너무 많으면 더 안 만듦
+        try{
+          var safeView = (remote.view === "back") ? "back" : "front";
+          var rect = {
+            x: clampNum(remote.x, 0, 0, 400), y: clampNum(remote.y, 0, 0, 1330),
+            w: clampNum(remote.w, 60, 20, 440), h: clampNum(remote.h, 60, 20, 1371)
+          };
+          if(overlapsRestricted(safeView, rect.x, rect.y, rect.w, rect.h)) return; // 부적절한 위치는 무시
           // 다른 방문자가 새로 추가한 커스텀 구역 — 내 화면에도 만들어줌
-          createCustomZone(zoneId, remote.label || zoneId, remote.view || "front", {
-            x: parseFloat(remote.x) || 0, y: parseFloat(remote.y) || 0,
-            w: parseFloat(remote.w) || 60, h: parseFloat(remote.h) || 60
-          });
-        }
+          var safeLabel = String(remote.label || zoneId).slice(0, 40);
+          createCustomZone(zoneId, safeLabel, safeView, rect);
+          customZoneCount++;
+        }catch(e){ /* 이 구역 하나가 이상해도 나머지 렌더링은 계속되게 */ }
       });
       ZONES.forEach(function(z){
         var remote = zones[z.id];
@@ -1401,17 +1440,6 @@
     var drawStart = null;
     var previewEl = null;
 
-    // 앞모습 기준 하의 중앙(사타구니) 부위는 광고 자리로 부적절하니 직접 추가를 막아요.
-    var RESTRICTED_ZONES = {
-      front: [ {x:170, y:640, width:100, height:200} ]
-    };
-    function overlapsRestricted(view, x, y, w, h){
-      var list = RESTRICTED_ZONES[view] || [];
-      return list.some(function(r){
-        return x < r.x + r.width && x + w > r.x && y < r.y + r.height && y + h > r.y;
-      });
-    }
-
     function eventXY(e){
       if(e.touches && e.touches[0]) return {x:e.touches[0].clientX, y:e.touches[0].clientY};
       return {x:e.clientX, y:e.clientY};
@@ -1731,20 +1759,20 @@
     row.className = "slot-row";
     row.dataset.row = id;
     row.innerHTML =
-      '<div class="slot-thumb" data-thumb="'+id+'"><span class="slot-thumb-plus">+</span></div>' +
+      '<div class="slot-thumb" data-thumb="'+escapeHtml(id)+'"><span class="slot-thumb-plus">+</span></div>' +
       '<div class="slot-info">' +
-        '<div class="slot-label">'+LABELS[id]+'</div>' +
-        '<div class="slot-price" data-price="'+id+'"><span class="dot"></span><span class="slot-price-text"></span></div>' +
+        '<div class="slot-label">'+escapeHtml(LABELS[id] || id)+'</div>' +
+        '<div class="slot-price" data-price="'+escapeHtml(id)+'"><span class="dot"></span><span class="slot-price-text"></span></div>' +
       '</div>' +
       '<div class="slot-actions">' +
         '<div class="slot-actions-row">' +
-          '<button class="btn-solid" data-confirm="'+id+'" hidden type="button">확정</button>' +
-          '<button class="btn-ghost" data-upload="'+id+'" type="button">업로드</button>' +
+          '<button class="btn-solid" data-confirm="'+escapeHtml(id)+'" hidden type="button">확정</button>' +
+          '<button class="btn-ghost" data-upload="'+escapeHtml(id)+'" type="button">업로드</button>' +
         '</div>' +
-        '<div class="slot-actions-row slot-actions-secondary" data-secondary="'+id+'">' +
-          '<button class="btn-text" data-resend-email="'+id+'" hidden type="button">이메일 재발송</button>' +
-          '<button class="btn-text" data-remove-btn="'+id+'" hidden type="button">삭제</button>' +
-          (isCustom ? '<button class="btn-text" data-delete-zone="'+id+'" type="button">위치 삭제</button>' : '') +
+        '<div class="slot-actions-row slot-actions-secondary" data-secondary="'+escapeHtml(id)+'">' +
+          '<button class="btn-text" data-resend-email="'+escapeHtml(id)+'" hidden type="button">이메일 재발송</button>' +
+          '<button class="btn-text" data-remove-btn="'+escapeHtml(id)+'" hidden type="button">삭제</button>' +
+          (isCustom ? '<button class="btn-text" data-delete-zone="'+escapeHtml(id)+'" type="button">위치 삭제</button>' : '') +
         '</div>' +
       '</div>';
     return row;
